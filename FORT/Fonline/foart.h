@@ -26,10 +26,20 @@ public:
 	void read(ByteReader* reader);
 };
 
+class hdr_t
+{
+public:
+	uint16_t frames_count;
+	uint16_t anim_ticks;
+	uint8_t dirs;
+
+	void read(ByteReader* reader);
+};
+
 class data_t
 {
 public:
-	file_t* hdr_ptr;
+	hdr_t* hdr_ptr;
 	int16_t offs_x;
 	int16_t offs_y;
 	std::vector<frame_t> frames;
@@ -41,9 +51,7 @@ class file_t
 {
 public:
 	uint8_t check_num1;
-	uint16_t frames_count;
-	uint16_t anim_ticks;
-	uint8_t dirs;
+	hdr_t hdr;
 	std::vector<data_t> data;
 
 	void read(ByteReader* reader);

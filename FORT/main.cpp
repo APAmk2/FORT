@@ -8,7 +8,7 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_stdlib.h"
 
-#include "foart.h"
+#include "Fonline/foart.h"
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -19,8 +19,8 @@ SDL_Window* window;
 ImGuiIO* io;
 SDL_GLContext gl_context;
 GLuint foart_tex;
-static int width = 0, height = 0;
-static string filename = "test.png";
+static int Fo2Dwidth = 0, Fo2Dheight = 0;
+static string Fo2Dfilename = "test.png";
 
 int initProgram()
 {
@@ -68,6 +68,8 @@ int initProgram()
     glBindTexture(GL_TEXTURE_2D, foart_tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    return 0;
 }
 
 void destroyProgram()
@@ -84,27 +86,24 @@ void destroyProgram()
 void updateFonline2D(string filename)
 {
     filesystem::path filepath = filename;
-    if (!decodeFonline2D(filepath, width, height))
+    if (!decodeFonline2D(filepath, Fo2Dwidth, Fo2Dheight))
     {
-        decodeOldFonline2D(filepath, width, height);
+        decodeOldFonline2D(filepath, Fo2Dwidth, Fo2Dheight);
     }
 }
 
 void drawWindow(ImVec4& clear_color)
 {
-    static float f = 0.0f;
-    static int counter = 0;
-
     ImGui::Begin("Fonline 2D Format");
-    ImGui::Text("Width:%i", width);
-    ImGui::Text("Height:%i", height);
-    ImGui::Text("Text:%s", filename.c_str());
-    ImGui::InputText("FOnline 2D Graphics file path", &filename);
+    ImGui::Text("Width:%i", Fo2Dwidth);
+    ImGui::Text("Height:%i", Fo2Dheight);
+    ImGui::Text("Text:%s", Fo2Dfilename.c_str());
+    ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
     if (ImGui::Button("Load File"))
     {
-        updateFonline2D(filename);
+        updateFonline2D(Fo2Dfilename);
     }
-    ImGui::Image((void*)(intptr_t)foart_tex, ImVec2(width, height));
+    ImGui::Image((void*)(intptr_t)foart_tex, ImVec2(Fo2Dwidth, Fo2Dheight));
     ImGui::End();
 }
 
@@ -150,7 +149,10 @@ void mainLoop()
 
 int main(int argc, char* argv[])
 {
-    initProgram();
+    if (initProgram() == -1)
+    {
+        return -1;
+    }
     mainLoop();
 	return 0;
 }
