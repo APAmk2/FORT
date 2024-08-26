@@ -19,8 +19,10 @@ SDL_Window* window;
 ImGuiIO* io;
 SDL_GLContext gl_context;
 GLuint foart_tex;
-static int Fo2Dwidth = 0, Fo2Dheight = 0;
+static int Fo2Dwidth = 0, Fo2Dheight = 0, Fo2DDir = 0;
 static string Fo2Dfilename = "test.png";
+static Fo2D_t* Fo2DFile = nullptr;
+static uint32_t Fo2DFPSTimer = 0;
 
 int initProgram()
 {
@@ -83,25 +85,56 @@ void destroyProgram()
     SDL_Quit();
 }
 
-void updateFonline2D(string filename)
+bool Fo2DTimer()
 {
-    filesystem::path filepath = filename;
-    if (!decodeFonline2D(filepath, Fo2Dwidth, Fo2Dheight))
-    {
-        decodeOldFonline2D(filepath, Fo2Dwidth, Fo2Dheight);
-    }
+    uint32_t now;
+
+    now = SDL_GetTicks();
+    if (Fo2DFPSTimer <= now)
+        return true;
+    else
+        return false;
 }
 
-void drawWindow(ImVec4& clear_color)
+void drawWindow()
 {
     ImGui::Begin("Fonline 2D Format");
+
     ImGui::Text("Width:%i", Fo2Dwidth);
+    ImGui::SameLine();
     ImGui::Text("Height:%i", Fo2Dheight);
-    ImGui::Text("Text:%s", Fo2Dfilename.c_str());
+    if (ImGui::Button("<") && Fo2DFile != nullptr)
+    {
+        Fo2DDir--;
+        if (Fo2DDir < 0) Fo2DDir = Fo2DFile->hdr->dirs - 1;
+    }
+    ImGui::SameLine();
+    ImGui::Text("Dir:%i/%i", Fo2DDir, (Fo2DFile != nullptr ? Fo2DFile->hdr->dirs - 1 : 0));
+    ImGui::SameLine();
+    if (ImGui::Button(">") && Fo2DFile != nullptr)
+    {
+        Fo2DDir++;
+        if (Fo2DDir >= Fo2DFile->hdr->dirs) Fo2DDir = 0;
+    }
+
+    ImGui::Text("Filename:%s", (Fo2DFile != nullptr ? Fo2DFile->filename.c_str() : ""));
+
     ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
     if (ImGui::Button("Load File"))
     {
-        updateFonline2D(Fo2Dfilename);
+        filesystem::path filepath = Fo2Dfilename;
+        readFonline2D(filepath, Fo2DFile);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Export File"))
+    {
+        exportFonline2D(Fo2DFile);
+    }
+
+    if (Fo2DFile != nullptr && Fo2DTimer())
+    {
+        renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir);
+        Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
     }
     ImGui::Image((void*)(intptr_t)foart_tex, ImVec2(Fo2Dwidth, Fo2Dheight));
     ImGui::End();
@@ -133,7 +166,7 @@ void mainLoop()
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        drawWindow(clear_color);
+        drawWindow();
 
         // Rendering
         ImGui::Render();

@@ -1,45 +1,31 @@
 #include "foart.h"
 #include "SDL_opengl.h"
+#include "lodepng.h"
+#include <stdio.h>
 
 using namespace std;
 
-void file_t::read(ByteReader* reader)
-{
-	check_num1 = reader->u8();
-	if (check_num1 != 42) return;
-	hdr_t newHdr;
-	newHdr.read(reader);
-	hdr = newHdr;
+#define DIRS_COUNT 6
 
-	for (size_t i = 0; i < hdr.dirs; i++)
-	{
-		data_t currData;
-		currData.hdr_ptr = &hdr;
-		currData.read(reader);
-		data.push_back(currData);
-	}
-}
-
-void hdr_t::read(ByteReader* reader)
+hdr_t::hdr_t(ByteReader* reader)
 {
 	frames_count = reader->u16();
 	anim_ticks = reader->u16();
 	dirs = reader->u8();
 }
 
-void data_t::read(ByteReader* reader)
+data_t::data_t(ByteReader* reader, hdr_t* hdr_ptr)
 {
 	offs_x = reader->i16();
 	offs_y = reader->i16();
 	for (size_t i = 0; i < hdr_ptr->frames_count; i++)
 	{
-		frame_t currFrame;
-		currFrame.read(reader);
+		frame_t currFrame(reader);
 		frames.push_back(currFrame);
 	}
 }
 
-void frame_t::read(ByteReader* reader)
+frame_t::frame_t(ByteReader* reader)
 {
 	is_shared = reader->u8() > 0;
 	if(!is_shared)
@@ -60,46 +46,133 @@ void frame_t::read(ByteReader* reader)
 	}
 }
 
-void oldfile_t::read(ByteReader* reader)
+Fo2D_t::Fo2D_t(ByteReader* reader)
 {
-	width = reader->u32();
-	height = reader->u32();
-	if(width == 1196314761) return;
-	for (size_t i = 0, len = width * height; i < len; i++)
+	uint8_t check_num = reader->u8();
+	reader->Pos(0);
+	uint32_t animSign = reader->u32();
+	reader->Pos(1);
+	if(check_num == 42 && animSign != 0xDEADBEEF)
 	{
-		ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
-		pixels.push_back(currPixel);
+		hdr = new hdr_t(reader);
+
+		for (size_t i = 0; i < hdr->dirs; i++)
+		{
+			data_t currData(reader, hdr);
+			data.push_back(currData);
+		}
+	}
+	else if(check_num != 137 && animSign != 0xDEADBEEF)
+	{
+		reader->Pos(0);
+
+		hdr = new hdr_t;
+		hdr->frames_count = 1;
+		hdr->anim_ticks = 1;
+		hdr->dirs = 1;
+
+		data_t newData;
+		newData.hdr_ptr = hdr;
+
+		frame_t newFrame;
+		newFrame.width = reader->u32();
+		newFrame.height = reader->u32();
+		//if (newFrame.width == 1196314761) return;
+		for (size_t i = 0, len = newFrame.width * newFrame.height; i < len; i++)
+		{
+			ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
+			newFrame.pixels.push_back(currPixel);
+		}
+		newData.frames.push_back(newFrame);
+		data.push_back(newData);
+	}
+	else if (animSign == 0xDEADBEEF)
+	{
+		reader->Pos(4);
+		hdr = new hdr_t;
+		hdr->frames_count = reader->u16();
+		hdr->anim_ticks = reader->u32();
+		hdr->dirs = reader->u16();
+
+		for (uint16_t dir = 0; dir < hdr->dirs; dir++)
+		{
+			data_t newData;
+			newData.hdr_ptr = hdr;
+			for (uint16_t i = 0; i < hdr->frames_count; i++)
+			{
+				frame_t newFrame;
+				newFrame.width = reader->u16();
+				newFrame.height = reader->u16();
+				newData.offs_x = reader->u16();
+				newData.offs_y = reader->u16();
+				newFrame.next_x = reader->u16();
+				newFrame.next_y = reader->u16();
+
+				for (size_t i = 0, len = newFrame.width * newFrame.height; i < len; i++)
+				{
+					ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
+					newFrame.pixels.push_back(currPixel);
+				}
+			}
+		}
 	}
 }
 
-bool decodeFonline2D(filesystem::path& filename, int& width, int& height)
+int frameCounter = 0;
+
+bool readFonline2D(std::filesystem::path& filename, Fo2D_t*& file)
 {
+	delete file;
+	file = nullptr;
+	frameCounter = 0;
 	ByteReader* reader = new ByteReader;
-	if(!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
-	file_t file;
-	file.read(reader);
+	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
+	file = new Fo2D_t(reader);
+    file->filename = filename.stem().string();
 	reader->Close();
-
-	if (file.check_num1 != 42) return false;
-
-	frame_t* currFrame_ptr = &file.data[0].frames[0];
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, currFrame_ptr->width, currFrame_ptr->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &currFrame_ptr->pixels[0]);
-	width = currFrame_ptr->width;
-	height = currFrame_ptr->height;
+	delete reader;
 
 	return true;
 }
 
-void decodeOldFonline2D(filesystem::path& filename, int& width, int& height)
+void exportFonline2D(Fo2D_t*& file)
 {
-	ByteReader* reader = new ByteReader;
-	if(!reader->Reset(filename.string(), ByteReader::BigEndian)) return;
-	oldfile_t file;
-	file.read(reader);
-	reader->Close();
-	if (file.width == 1196314761) return;
+	for (size_t currData = 0; currData < file->hdr->dirs; currData++)
+	{
+		for (size_t currFrame = 0; currFrame < file->hdr->frames_count; currFrame++)
+		{
+			frame_t* currFrame_ptr = &file->data[currData].frames[currFrame];
+			std::vector<unsigned char> image;
+			
+			int width = currFrame_ptr->width;
+			int height = currFrame_ptr->height;
+			image.resize(width * height * 4);
+			for (size_t i = 0; i < width * height; i++)
+			{
+				image[i * 4] = currFrame_ptr->pixels[i].r;
+				image[i * 4 + 1] = currFrame_ptr->pixels[i].g;
+				image[i * 4 + 2] = currFrame_ptr->pixels[i].b;
+				image[i * 4 + 3] = currFrame_ptr->pixels[i].a;
+			}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, file.width, file.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &file.pixels[0]);
-	width = file.width;
-	height = file.height;
+			unsigned error = lodepng::encode((file->filename + "_" + to_string(currData) + "_" + to_string(currFrame)) + ".png", image, width, height);
+			if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+		}
+	}
+}
+
+bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir)
+{
+	frame_t* currFrame_ptr = &file->data[dir].frames[frameCounter];
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, currFrame_ptr->width, currFrame_ptr->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &currFrame_ptr->pixels[0]);
+	width = currFrame_ptr->width;
+	height = currFrame_ptr->height;
+	
+	frameCounter++;
+	if (frameCounter >= file->data[dir].frames.size())
+	{
+		frameCounter = 0;
+	}
+
+	return true;
 }
