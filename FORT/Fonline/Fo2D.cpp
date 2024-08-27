@@ -1,7 +1,10 @@
-#include "foart.h"
-#include "SDL_opengl.h"
+#include "Fo2D.h"
 #include "lodepng.h"
+#include "imgui.h"
+#include "imgui_stdlib.h"
+#include "SDL.h"
 #include <stdio.h>
+#include <filesystem>
 
 using namespace std;
 
@@ -175,4 +178,59 @@ bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir)
 	}
 
 	return true;
+}
+
+void Fo2DWindow::drawWindow()
+{
+	if (!getVisible()) return;
+	ImGui::Begin("Fonline 2D Graphics Tool");
+
+	ImGui::Text("Width:%i", Fo2Dwidth);
+	ImGui::SameLine();
+	ImGui::Text("Height:%i", Fo2Dheight);
+	ImGui::SameLine();
+	ImGui::Text("FPS:%i", (Fo2DFile != nullptr ? (Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count) / 10 : 0));
+	ImGui::SameLine();
+	ImGui::Text("Frames:%i/%i", frameCounter, (Fo2DFile != nullptr ? Fo2DFile->hdr->frames_count - 1: 0));
+	if (ImGui::Button("<") && Fo2DFile != nullptr)
+	{
+		Fo2DDir--;
+		if (Fo2DDir < 0) Fo2DDir = Fo2DFile->hdr->dirs - 1;
+	}
+	ImGui::SameLine();
+	ImGui::Text("Dir:%i/%i", Fo2DDir, (Fo2DFile != nullptr ? Fo2DFile->hdr->dirs - 1 : 0));
+	ImGui::SameLine();
+	if (ImGui::Button(">") && Fo2DFile != nullptr)
+	{
+		Fo2DDir++;
+		if (Fo2DDir >= Fo2DFile->hdr->dirs) Fo2DDir = 0;
+	}
+
+	ImGui::Text("Filename:%s", (Fo2DFile != nullptr ? Fo2DFile->filename.c_str() : ""));
+
+	ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
+	if (ImGui::Button("Load File"))
+	{
+		filesystem::path filepath = Fo2Dfilename;
+		readFonline2D(filepath, Fo2DFile);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Export File"))
+	{
+		exportFonline2D(Fo2DFile);
+	}
+
+	if (Fo2DFile != nullptr && Fo2DFPSTimer <= SDL_GetTicks())
+	{
+		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir);
+		Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
+	}
+	ImGui::Image((void*)(intptr_t)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
+	ImGui::End();
+}
+
+void Fo2DWindow::initWindow()
+{
+	glGenTextures(1, &Fo2DTex);
+	glBindTexture(GL_TEXTURE_2D, Fo2DTex);
 }

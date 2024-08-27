@@ -2,31 +2,32 @@
 //
 #include "FORT.h"
 #include "SDL.h"
-#include "SDL_opengl.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_stdlib.h"
+#include "Utils/BaseToolWindow.h"
 
-#include "Fonline/foart.h"
+#include "Fonline/Fo2D.h"
+#include "FT/FTSprite.h"
+
 #include <filesystem>
-#include <string>
 #include <vector>
+#include <iostream>
+#include <string>
+
+#define PROGRAM_LABEL "FORT:A FallOut Resources Tools"
 
 using namespace std;
 
 SDL_Window* window;
 ImGuiIO* io;
 SDL_GLContext gl_context;
-GLuint foart_tex;
-static int Fo2Dwidth = 0, Fo2Dheight = 0, Fo2DDir = 0;
-static string Fo2Dfilename = "test.png";
-static Fo2D_t* Fo2DFile = nullptr;
-static uint32_t Fo2DFPSTimer = 0;
+vector<BaseToolWindow*> windows;
 
 int initProgram()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
         return -1;
@@ -46,7 +47,7 @@ int initProgram()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    window = SDL_CreateWindow("FORT:A FallOut Resources Tools", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    window = SDL_CreateWindow(PROGRAM_LABEL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     if (window == nullptr)
     {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -66,8 +67,17 @@ int initProgram()
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    glGenTextures(1, &foart_tex);
-    glBindTexture(GL_TEXTURE_2D, foart_tex);
+    static Fo2DWindow Fo2DTool(false);
+    windows.push_back((BaseToolWindow*) &Fo2DTool);
+
+    static FTSpriteWindow FTSTool(false);
+    windows.push_back((BaseToolWindow*) &FTSTool);
+
+    for (size_t i = 0, len = windows.size(); i < len; i++)
+    {
+        windows[i]->initWindow();
+    }
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -85,76 +95,48 @@ void destroyProgram()
     SDL_Quit();
 }
 
-bool Fo2DTimer()
-{
-    uint32_t now;
-
-    now = SDL_GetTicks();
-    if (Fo2DFPSTimer <= now)
-        return true;
-    else
-        return false;
-}
-
 void drawWindow()
 {
-    ImGui::Begin("Fonline 2D Format");
-
-    ImGui::Text("Width:%i", Fo2Dwidth);
-    ImGui::SameLine();
-    ImGui::Text("Height:%i", Fo2Dheight);
-    if (ImGui::Button("<") && Fo2DFile != nullptr)
+    if (ImGui::BeginMainMenuBar())
     {
-        Fo2DDir--;
-        if (Fo2DDir < 0) Fo2DDir = Fo2DFile->hdr->dirs - 1;
+        if (ImGui::BeginMenu("Tools"))
+        {
+            if (ImGui::BeginMenu("Fonline"))
+            {
+                if (ImGui::MenuItem("Fonline2D")) { windows[0]->setVisible(!windows[0]->getVisible()); }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Fallout:Tactics"))
+            {
+                if (ImGui::MenuItem("FTSprite")) { windows[1]->setVisible(!windows[1]->getVisible()); }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Fallout 1/2"))
+            {
+                if (ImGui::MenuItem("Placeholder")) { }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::MenuItem("Exit")) { progSettings.callExit = true; }
+        ImGui::EndMainMenuBar();
     }
-    ImGui::SameLine();
-    ImGui::Text("Dir:%i/%i", Fo2DDir, (Fo2DFile != nullptr ? Fo2DFile->hdr->dirs - 1 : 0));
-    ImGui::SameLine();
-    if (ImGui::Button(">") && Fo2DFile != nullptr)
-    {
-        Fo2DDir++;
-        if (Fo2DDir >= Fo2DFile->hdr->dirs) Fo2DDir = 0;
-    }
-
-    ImGui::Text("Filename:%s", (Fo2DFile != nullptr ? Fo2DFile->filename.c_str() : ""));
-
-    ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
-    if (ImGui::Button("Load File"))
-    {
-        filesystem::path filepath = Fo2Dfilename;
-        readFonline2D(filepath, Fo2DFile);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Export File"))
-    {
-        exportFonline2D(Fo2DFile);
-    }
-
-    if (Fo2DFile != nullptr && Fo2DTimer())
-    {
-        renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir);
-        Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
-    }
-    ImGui::Image((void*)(intptr_t)foart_tex, ImVec2(Fo2Dwidth, Fo2Dheight));
-    ImGui::End();
 }
 
 void mainLoop()
 {
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    bool done = false;
-    while (!done)
+    while (!progSettings.callExit)
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
-                done = true;
+                progSettings.callExit = true;
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                done = true;
+                progSettings.callExit = true;
         }
         if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)
         {
@@ -167,6 +149,11 @@ void mainLoop()
         ImGui::NewFrame();
 
         drawWindow();
+
+        for (size_t i = 0, len = windows.size(); i < len; i++)
+        {
+            windows[i]->drawWindow();
+        }
 
         // Rendering
         ImGui::Render();

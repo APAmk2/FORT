@@ -3,6 +3,7 @@
 
 #pragma once
 
-#include <iostream>
-
-// TODO: Reference additional headers your program requires here.
+struct ProgramSettings
+{
+	bool callExit = false;
+} static progSettings;

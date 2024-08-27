@@ -1,17 +1,11 @@
 #pragma once
 
-#include "ByteReader.hpp"
+#include "./Utils/ByteReader.hpp"
+#include "./Utils/BaseToolWindow.h"
+#include "./Utils/BaseDataTypes.h"
+#include "SDL_opengl.h"
 #include <vector>
-#include <filesystem>
 #include <string>
-
-struct ucolor
-{
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-	uint8_t a;
-};
 
 class frame_t
 {
@@ -61,8 +55,16 @@ public:
 	Fo2D_t(ByteReader* reader);
 };
 
-bool readFonline2D(std::filesystem::path& filename, Fo2D_t*& file);
-void exportFonline2D(Fo2D_t*& file);
-bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir);
-//bool readOldFonline2D(std::filesystem::path& filename, oldfile_t*& file);
-//void renderOldFonline2D(oldfile_t* file, int& width, int& height);
+class Fo2DWindow : public BaseToolWindow
+{
+public:
+	Fo2DWindow(bool visibility) : BaseToolWindow(visibility) { }
+	void drawWindow();
+	void initWindow();
+private:
+	int Fo2Dwidth = 0, Fo2Dheight = 0, Fo2DDir = 0;
+	std::string Fo2Dfilename = "test.png";
+	Fo2D_t* Fo2DFile = nullptr;
+	uint32_t Fo2DFPSTimer = 0;
+	GLuint Fo2DTex = 0;
+};

@@ -28,7 +28,13 @@ find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
-add_executable (FORT "FORT/main.cpp" "3rdparty/lodepng/lodepng.cpp" "FORT/ByteReader.cpp" "FORT/Fonline/foart.cpp" ${IMGUI_INCLUDE})
+add_executable (FORT "FORT/main.cpp" 
+					 "3rdparty/lodepng/lodepng.cpp"
+					 "FORT/Utils/ByteReader.cpp"
+					 "FORT/Fonline/Fo2D.cpp"
+					 "FORT/FT/FTSprite.cpp"
+					 ${IMGUI_INCLUDE}
+)
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)
 add_custom_command(TARGET FORT POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_LIBDIR}/SDL2.dll" $<TARGET_FILE_DIR:FORT>)
 
