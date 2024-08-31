@@ -167,8 +167,6 @@ void exportFonline2D(Fo2D_t*& file)
 bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, GLuint& Fo2DTex)
 {
 	frame_t* currFrame_ptr = &file->data[dir].frames[frameCounter];
-	glEnable(GL_ACTIVE_TEXTURE);
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Fo2DTex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, currFrame_ptr->width, currFrame_ptr->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &currFrame_ptr->pixels[0]);
 	width = currFrame_ptr->width;
@@ -180,7 +178,6 @@ bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, GLuint& Fo
 		frameCounter = 0;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, 0);
 	return true;
 }
 

@@ -215,7 +215,6 @@ void exportFTSprite(FTSprite_t*& file)
 bool renderFTSprite(FTSprite_t* file, int& width, int& height, int& dir, GLuint& FTSTex)
 {
 	glBindTexture(GL_TEXTURE_2D, FTSTex);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	return true;
 }
 
