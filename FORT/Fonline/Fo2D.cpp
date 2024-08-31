@@ -164,9 +164,12 @@ void exportFonline2D(Fo2D_t*& file)
 	}
 }
 
-bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir)
+bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, GLuint& Fo2DTex)
 {
 	frame_t* currFrame_ptr = &file->data[dir].frames[frameCounter];
+	glEnable(GL_ACTIVE_TEXTURE);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, Fo2DTex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, currFrame_ptr->width, currFrame_ptr->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &currFrame_ptr->pixels[0]);
 	width = currFrame_ptr->width;
 	height = currFrame_ptr->height;
@@ -177,6 +180,7 @@ bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir)
 		frameCounter = 0;
 	}
 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	return true;
 }
 
@@ -222,7 +226,7 @@ void Fo2DWindow::drawWindow()
 
 	if (Fo2DFile != nullptr && Fo2DFPSTimer <= SDL_GetTicks())
 	{
-		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir);
+		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir, Fo2DTex);
 		Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
 	}
 	ImGui::Image((void*)(intptr_t)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
@@ -232,5 +236,4 @@ void Fo2DWindow::drawWindow()
 void Fo2DWindow::initWindow()
 {
 	glGenTextures(1, &Fo2DTex);
-	glBindTexture(GL_TEXTURE_2D, Fo2DTex);
 }

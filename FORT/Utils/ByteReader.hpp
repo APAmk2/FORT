@@ -28,6 +28,7 @@ public:
     std::string string(int len);
     void Pos(size_t value);
     void Read(void* buffer, size_t bytes);
+    size_t CurrPos();
 private:
     size_t _Type;
     size_t _Bytes;

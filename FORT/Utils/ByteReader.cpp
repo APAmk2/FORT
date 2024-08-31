@@ -121,10 +121,17 @@ int32_t ByteReader::i32()
 
 std::string ByteReader::string(int len)
 {
-    char* buffer = new char[len];
+    char* buffer = new char[len + 1];
     _File.read(buffer, len);
+    buffer[len] = '\0';
     std::string val(buffer);
     delete[] buffer;
 
     return val;
+}
+
+size_t ByteReader::CurrPos()
+{
+    std::streampos length(_File.tellg());
+    return (size_t)length;
 }
