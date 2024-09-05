@@ -1,9 +1,9 @@
 #pragma once
 
+#include "SDL.h"
 #include "./Utils/ByteReader.hpp"
 #include "./Utils/BaseToolWindow.h"
 #include "./Utils/BaseDataTypes.h"
-#include "SDL_opengl.h"
 #include <vector>
 #include <string>
 
@@ -66,5 +66,5 @@ private:
 	std::string Fo2Dfilename = "test.png";
 	Fo2D_t* Fo2DFile = nullptr;
 	uint32_t Fo2DFPSTimer = 0;
-	GLuint Fo2DTex = 0;
+	SDL_Texture* Fo2DTex = nullptr;
 };

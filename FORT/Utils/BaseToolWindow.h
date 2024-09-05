@@ -10,6 +10,8 @@ public:
 	virtual void initWindow() {};
 	virtual void setVisible(bool val) { this->visible = val; };
 	virtual bool getVisible() { return this->visible; };
+
+	SDL_Renderer* renderer;
 private:
 	bool visible = true;
 };

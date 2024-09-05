@@ -2,7 +2,6 @@
 #include "lodepng.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
-#include "SDL.h"
 #include <stdio.h>
 #include <filesystem>
 
@@ -164,11 +163,29 @@ void exportFonline2D(Fo2D_t*& file)
 	}
 }
 
-bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, GLuint& Fo2DTex)
+bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, SDL_Texture** Fo2DTex, SDL_Renderer* renderer)
 {
 	frame_t* currFrame_ptr = &file->data[dir].frames[frameCounter];
-	glBindTexture(GL_TEXTURE_2D, Fo2DTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, currFrame_ptr->width, currFrame_ptr->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &currFrame_ptr->pixels[0]);
+	
+	SDL_DestroyTexture(*Fo2DTex);
+	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*)&currFrame_ptr->pixels[0], currFrame_ptr->width, currFrame_ptr->height, 4 * 8, 4 * currFrame_ptr->width,
+		0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+
+	if (surface == nullptr) 
+	{
+		fprintf(stderr, "Failed to create SDL surface: %s\n", SDL_GetError());
+		return false;
+	}
+
+	*Fo2DTex = SDL_CreateTextureFromSurface(renderer, surface);
+
+	if (*Fo2DTex == nullptr) 
+	{
+		fprintf(stderr, "Failed to create SDL texture: %s\n", SDL_GetError());
+	}
+
+	SDL_FreeSurface(surface);
+	
 	width = currFrame_ptr->width;
 	height = currFrame_ptr->height;
 	
@@ -223,14 +240,12 @@ void Fo2DWindow::drawWindow()
 
 	if (Fo2DFile != nullptr && Fo2DFPSTimer <= SDL_GetTicks())
 	{
-		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir, Fo2DTex);
+		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir, &Fo2DTex, renderer);
 		Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
 	}
-	ImGui::Image((void*)(intptr_t)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
+	ImGui::Image((void*)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
 	ImGui::End();
 }
 
 void Fo2DWindow::initWindow()
-{
-	glGenTextures(1, &Fo2DTex);
-}
+{}

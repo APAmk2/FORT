@@ -19,14 +19,13 @@ set(IMGUI_INCLUDE
   ${IMGUI_PATH}/imgui_demo.cpp
   ${IMGUI_PATH}/imgui_tables.cpp
   ${IMGUI_PATH}/backends/imgui_impl_sdl2.cpp
-  ${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp
+  ${IMGUI_PATH}/backends/imgui_impl_sdlrenderer2.cpp
   ${IMGUI_PATH}/misc/cpp/imgui_stdlib.cpp
 )
 
 set(SDL2_DIR "3rdparty/SDL2-2.30.6/cmake")
 set(ZLIB_ROOT "3rdparty/zlib-1.2.3")
 find_package(SDL2 REQUIRED)
-find_package(OpenGL REQUIRED)
 find_package(ZLIB REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
@@ -41,4 +40,4 @@ set_property(TARGET FORT PROPERTY CXX_STANDARD 20)
 add_custom_command(TARGET FORT POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_LIBDIR}/SDL2.dll" $<TARGET_FILE_DIR:FORT>)
 
 include_directories(FORT ${SDL2_INCLUDE_DIR} ${IMGUI_PATH} ${IMGUI_PATH}/backends ${IMGUI_PATH}/misc/cpp 3rdparty/lodepng ${ZLIB_INCLUDE_DIRS})
-target_link_libraries(FORT ${SDL2_LIBRARY} ${OPENGL_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zlib-1.2.3/lib/zlib.lib)
+target_link_libraries(FORT ${SDL2_LIBRARY} ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zlib-1.2.3/lib/zlib.lib)

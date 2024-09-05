@@ -212,9 +212,8 @@ void exportFTSprite(FTSprite_t*& file)
 
 }
 
-bool renderFTSprite(FTSprite_t* file, int& width, int& height, int& dir, GLuint& FTSTex)
+bool renderFTSprite(FTSprite_t* file, int& width, int& height, int& dir, SDL_Texture& FTSTex)
 {
-	glBindTexture(GL_TEXTURE_2D, FTSTex);
 	return true;
 }
 
@@ -283,6 +282,4 @@ void FTSpriteWindow::drawWindow()
 	ImGui::End();
 }
 void FTSpriteWindow::initWindow()
-{
-	glGenTextures(1, &FTSTex);
-}
+{}

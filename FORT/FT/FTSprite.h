@@ -1,9 +1,9 @@
 #pragma once
 
+#include "SDL.h"
 #include "./Utils/ByteReader.hpp"
 #include "./Utils/BaseToolWindow.h"
 #include "./Utils/BaseDataTypes.h"
-#include "SDL_opengl.h"
 #include <vector>
 #include <string>
 
@@ -77,5 +77,5 @@ private:
 	FTSprite_t* FTSFile = nullptr;
 	std::string FTSfilename = "test.png";
 	uint32_t FTSFPSTimer = 0;
-	GLuint FTSTex = 0;
+	SDL_Texture* FTSTex = nullptr;
 };
