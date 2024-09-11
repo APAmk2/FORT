@@ -58,6 +58,7 @@ void FotxtbWindow::drawWindow()
 	if (FotxtbFile != nullptr)
 	{
 		ImGui::Text("Entries:%i", FotxtbFile->entriesCount);
+		ImGui::NewLine();
 		std::string strToDisplay = "";
 
 		for (const auto& [key, val] : FotxtbFile->entries)
