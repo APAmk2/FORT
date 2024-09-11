@@ -98,10 +98,10 @@ void drawWindow()
     {
         if (ImGui::BeginMenu("Tools"))
         {
-            if (ImGui::BeginMenu("Fonline"))
+            if (ImGui::BeginMenu("New Fonline"))
             {
                 if (ImGui::MenuItem("Fonline2D")) { windows[0]->setVisible(!windows[0]->getVisible()); }
-                if (ImGui::MenuItem("Fotxtb")) { windows[1]->setVisible(!windows[1]->getVisible()); }
+                if (ImGui::MenuItem("Fonline txtb")) { windows[1]->setVisible(!windows[1]->getVisible()); }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Fallout:Tactics"))
