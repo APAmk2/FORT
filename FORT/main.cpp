@@ -8,8 +8,9 @@
 #include "imgui_stdlib.h"
 #include "Utils/BaseToolWindow.h"
 
-#include "Fonline/Fo2D.h"
-#include "FT/FTSprite.h"
+#include "Fonline/Fo2D_win.h"
+#include "Fonline/fotxtb_win.h"
+#include "FT/FTSprite_win.h"
 
 #include <filesystem>
 #include <vector>
@@ -65,6 +66,9 @@ int initProgram()
     static Fo2DWindow Fo2DTool(false);
     windows.push_back((BaseToolWindow*) &Fo2DTool);
 
+    static FotxtbWindow FotxtbTool(false);
+    windows.push_back((BaseToolWindow*)&FotxtbTool);
+
     static FTSpriteWindow FTSTool(false);
     windows.push_back((BaseToolWindow*) &FTSTool);
 
@@ -97,11 +101,12 @@ void drawWindow()
             if (ImGui::BeginMenu("Fonline"))
             {
                 if (ImGui::MenuItem("Fonline2D")) { windows[0]->setVisible(!windows[0]->getVisible()); }
+                if (ImGui::MenuItem("Fotxtb")) { windows[1]->setVisible(!windows[1]->getVisible()); }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Fallout:Tactics"))
             {
-                if (ImGui::MenuItem("FTSprite")) { windows[1]->setVisible(!windows[1]->getVisible()); }
+                if (ImGui::MenuItem("FTSprite")) { windows[2]->setVisible(!windows[2]->getVisible()); }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Fallout 1/2"))

@@ -29,11 +29,21 @@ find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
+set(FONLINE_FORMATS FORT/Fonline/Fo2D.cpp
+					FORT/Fonline/fotxtb.cpp)
+set(FONLINE_WINDOWS FORT/Fonline/Fo2D_win.cpp
+					FORT/Fonline/fotxtb_win.cpp)
+
+set(FT_FORMATS FORT/FT/FTSprite.cpp)
+set(FT_WINDOWS FORT/FT/FTSprite_win.cpp)
+
 add_executable (FORT "FORT/main.cpp" 
 					 "3rdparty/lodepng/lodepng.cpp"
 					 "FORT/Utils/ByteReader.cpp"
-					 "FORT/Fonline/Fo2D.cpp"
-					 "FORT/FT/FTSprite.cpp"
+					 ${FONLINE_FORMATS}
+					 ${FONLINE_WINDOWS}
+					 ${FT_FORMATS}
+					 ${FT_WINDOWS}
 					 ${IMGUI_INCLUDE}
 )
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)

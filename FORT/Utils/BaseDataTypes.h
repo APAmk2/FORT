@@ -8,6 +8,13 @@ struct ucolor
 	uint8_t a;
 };
 
+struct color_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
+
 struct rect
 {
 	uint32_t  x1; // left
