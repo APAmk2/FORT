@@ -1,5 +1,7 @@
 #pragma once
 
+#define ISFLAG(x, flag)     ( (x & flag) != 0 )
+
 struct ucolor
 {
 	uint8_t r;

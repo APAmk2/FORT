@@ -37,6 +37,11 @@ set(NEW_FONLINE_WINDOWS FORT/Fonline/Fo2D_win.cpp
 set(FT_FORMATS FORT/FT/FTSprite.cpp)
 set(FT_WINDOWS FORT/FT/FTSprite_win.cpp)
 
+set(FALLOUT_FORMATS FORT/Fallout/FallProto.cpp
+					)
+set(FALLOUT_WINDOWS FORT/Fallout/FallProto_win.cpp
+					)
+
 add_executable (FORT "FORT/main.cpp" 
 					 "3rdparty/lodepng/lodepng.cpp"
 					 "FORT/Utils/ByteReader.cpp"
@@ -44,6 +49,8 @@ add_executable (FORT "FORT/main.cpp"
 					 ${NEW_FONLINE_WINDOWS}
 					 ${FT_FORMATS}
 					 ${FT_WINDOWS}
+					 ${FALLOUT_FORMATS}
+					 ${FALLOUT_WINDOWS}
 					 ${IMGUI_INCLUDE}
 )
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)

@@ -11,6 +11,8 @@
 #include "Fonline/Fo2D_win.h"
 #include "Fonline/fotxtb_win.h"
 #include "FT/FTSprite_win.h"
+#include "Fallout/FallMap_win.h"
+#include "Fallout/FallProto_win.h"
 
 #include <filesystem>
 #include <vector>
@@ -72,6 +74,12 @@ int initProgram()
     static FTSpriteWindow FTSTool(false);
     windows.push_back((BaseToolWindow*) &FTSTool);
 
+    static FallProtoWindow FallProtoTool(false);
+    windows.push_back((BaseToolWindow*)&FallProtoTool);
+
+    static FallMapWindow FallMapTool(false);
+    windows.push_back((BaseToolWindow*)&FallMapTool);
+
     for (size_t i = 0, len = windows.size(); i < len; i++)
     {
         windows[i]->renderer = renderer;
@@ -111,7 +119,8 @@ void drawWindow()
             }
             if (ImGui::BeginMenu("Fallout 1/2"))
             {
-                if (ImGui::MenuItem("Placeholder")) { }
+                if (ImGui::MenuItem("Fallout .pro")) { windows[3]->setVisible(!windows[3]->getVisible()); }
+                if (ImGui::MenuItem("Fallout .map")) { windows[4]->setVisible(!windows[4]->getVisible()); }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();
