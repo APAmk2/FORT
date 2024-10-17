@@ -38,8 +38,10 @@ set(FT_FORMATS FORT/FT/FTSprite.cpp)
 set(FT_WINDOWS FORT/FT/FTSprite_win.cpp)
 
 set(FALLOUT_FORMATS FORT/Fallout/FallProto.cpp
+					FORT/Fallout/FallMap.cpp
 					)
 set(FALLOUT_WINDOWS FORT/Fallout/FallProto_win.cpp
+					FORT/Fallout/FallMap_win.cpp
 					)
 
 add_executable (FORT "FORT/main.cpp" 
