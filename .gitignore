@@ -3,3 +3,4 @@
 out
 out/*
 CMakePresets.json
+binaries/*

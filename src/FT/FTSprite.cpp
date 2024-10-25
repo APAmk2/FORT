@@ -47,7 +47,7 @@ AnimImgHdr_t::AnimImgHdr_t(ByteReader* reader)
 	{
 		unpacked_size = reader->u32();
 	}
-	pos = reader->CurrPos();
+	pos = (uint32_t)reader->CurrPos();
 }
 
 AnimHdr_t::AnimHdr_t(ByteReader* reader)
@@ -179,10 +179,8 @@ FTSprite_t::FTSprite_t(ByteReader* reader)
 			}
 			else if (tag == '\1')
 			{
-				int32_t x;
-				stream.read((char*)&x, sizeof(int32_t));
-				int32_t y;
-				stream.read((char*)&y, sizeof(int32_t));
+				int32_t x = reader->i32();
+				int32_t y = reader->i32();
 			}
 		}
 	}

@@ -77,7 +77,7 @@ uint16_t ByteReader::u16()
 
   _File.read((char*)&val, sizeof(uint16_t));
 
-  if (_Type == BigEndian)
+  if (_Type == LittleEndian)
       return val;
   else
       return HTONS(val);
@@ -89,7 +89,7 @@ int16_t ByteReader::i16()
 
   _File.read((char*)&val, sizeof(int16_t));
 
-  if (_Type == BigEndian)
+  if (_Type == LittleEndian)
       return val;
   else
       return HTONS(val);
@@ -101,7 +101,7 @@ uint32_t ByteReader::u32()
 
   _File.read((char*)&val, sizeof(uint32_t));
     
-  if (_Type == BigEndian)
+  if (_Type == LittleEndian)
       return val;
   else
       return HTONL(val);
@@ -113,7 +113,7 @@ int32_t ByteReader::i32()
 
   _File.read((char*)&val, sizeof(int32_t));
     
-  if (_Type == BigEndian)
+  if (_Type == LittleEndian)
       return val;
   else
       return HTONL(val);

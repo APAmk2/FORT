@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SDL.h"
-#include "./Utils/BaseToolWindow.h"
+#include "../Utils/BaseToolWindow.h"
 #include "FallProto.h"
 #include <vector>
 #include <string>

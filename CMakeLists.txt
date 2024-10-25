@@ -29,24 +29,27 @@ find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
-set(NEW_FONLINE_FORMATS FORT/Fonline/Fo2D.cpp
-					FORT/Fonline/fotxtb.cpp)
-set(NEW_FONLINE_WINDOWS FORT/Fonline/Fo2D_win.cpp
-					FORT/Fonline/fotxtb_win.cpp)
+set(NEW_FONLINE_FORMATS src/Fonline/Fo2D.cpp
+					src/Fonline/fotxtb.cpp)
+set(NEW_FONLINE_WINDOWS src/Fonline/Fo2D_win.cpp
+					src/Fonline/fotxtb_win.cpp)
 
-set(FT_FORMATS FORT/FT/FTSprite.cpp)
-set(FT_WINDOWS FORT/FT/FTSprite_win.cpp)
+set(FT_FORMATS src/FT/FTSprite.cpp)
+set(FT_WINDOWS src/FT/FTSprite_win.cpp)
 
-set(FALLOUT_FORMATS FORT/Fallout/FallProto.cpp
-					FORT/Fallout/FallMap.cpp
+set(FALLOUT_FORMATS src/Fallout/FallProto.cpp
+					src/Fallout/FallMap.cpp
+					src/Fallout/FallFRM.cpp
 					)
-set(FALLOUT_WINDOWS FORT/Fallout/FallProto_win.cpp
-					FORT/Fallout/FallMap_win.cpp
+set(FALLOUT_WINDOWS src/Fallout/FallProto_win.cpp
+					src/Fallout/FallMap_win.cpp
+					src/Fallout/FallFRM_win.cpp
 					)
 
-add_executable (FORT "FORT/main.cpp" 
+add_executable (FORT "src/main.cpp" 
 					 "3rdparty/lodepng/lodepng.cpp"
-					 "FORT/Utils/ByteReader.cpp"
+					 "src/Utils/ByteReader.cpp"
+					 "src/Utils/MemoryReader.cpp"
 					 ${NEW_FONLINE_FORMATS}
 					 ${NEW_FONLINE_WINDOWS}
 					 ${FT_FORMATS}
@@ -56,6 +59,10 @@ add_executable (FORT "FORT/main.cpp"
 					 ${IMGUI_INCLUDE}
 )
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)
+set_target_properties(FORT PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/binaries/debug"
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/binaries/release")
+
 add_custom_command(TARGET FORT POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_LIBDIR}/SDL2.dll" $<TARGET_FILE_DIR:FORT>)
 
 include_directories(FORT ${SDL2_INCLUDE_DIR} ${IMGUI_PATH} ${IMGUI_PATH}/backends ${IMGUI_PATH}/misc/cpp 3rdparty/lodepng ${ZLIB_INCLUDE_DIRS})

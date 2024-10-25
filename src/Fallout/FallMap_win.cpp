@@ -17,7 +17,7 @@ bool readFallMap(std::filesystem::path& filename, FallMap_t*& file)
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
-	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
+	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
 	file = new FallMap_t(reader);
 	file->filename = filename.stem().string();
 	reader->Close();
@@ -225,6 +225,7 @@ void FallMapWindow::drawWindow()
 	ImGui::Begin("Fallout .map Reading Tool");
 
 	ImGui::InputText("Fallout .map file path", &fallMapfilename);
+	ImGui::InputText("Fallout Game Path", &gamePath);
 	if (ImGui::Button("Load File"))
 	{
 		filesystem::path filepath = fallMapfilename;
@@ -282,7 +283,7 @@ void FallMapWindow::drawWindow()
 void FallMapWindow::initWindow()
 {
 	string currString;
-	ifstream input("TILES.LST");
+	ifstream input(gamePath + "art/tiles/TILES.LST");
 	if (input.is_open())
 	{
 		while (getline(input, currString))

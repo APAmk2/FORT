@@ -20,7 +20,7 @@ bool readFallProto(std::filesystem::path& filename, FallProto_t*& file)
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
-	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
+	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
 	file = new FallProto_t(reader);
 	file->filename = filename.stem().string();
 	reader->Close();

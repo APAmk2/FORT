@@ -13,6 +13,7 @@
 #include "FT/FTSprite_win.h"
 #include "Fallout/FallMap_win.h"
 #include "Fallout/FallProto_win.h"
+#include "Fallout/FallFRM_win.h"
 
 #include <filesystem>
 #include <vector>
@@ -21,13 +22,11 @@
 
 #define PROGRAM_LABEL "FORT:A FallOut Resources Tools"
 
-using namespace std;
-
 SDL_Window* window;
 SDL_Renderer* renderer;
 ImGuiIO* io;
 SDL_GLContext gl_context;
-vector<BaseToolWindow*> windows;
+std::vector<BaseToolWindow*> windows;
 
 int initProgram()
 {
@@ -80,6 +79,9 @@ int initProgram()
     static FallMapWindow FallMapTool(false);
     windows.push_back((BaseToolWindow*)&FallMapTool);
 
+    static FallFRMWindow FallFRMTool(false);
+    windows.push_back((BaseToolWindow*)&FallFRMTool);
+
     for (size_t i = 0, len = windows.size(); i < len; i++)
     {
         windows[i]->renderer = renderer;
@@ -119,8 +121,9 @@ void drawWindow()
             }
             if (ImGui::BeginMenu("Fallout 1/2"))
             {
-                if (ImGui::MenuItem("Fallout .pro")) { windows[3]->setVisible(!windows[3]->getVisible()); }
-                if (ImGui::MenuItem("Fallout .map")) { windows[4]->setVisible(!windows[4]->getVisible()); }
+                if (ImGui::MenuItem("Fallout .PRO")) { windows[3]->setVisible(!windows[3]->getVisible()); }
+                if (ImGui::MenuItem("Fallout .MAP")) { windows[4]->setVisible(!windows[4]->getVisible()); }
+                if (ImGui::MenuItem("Fallout .FRM")) { windows[5]->setVisible(!windows[5]->getVisible()); }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

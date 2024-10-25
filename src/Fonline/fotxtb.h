@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./Utils/ByteReader.hpp"
-#include "./Utils/BaseDataTypes.h"
+#include "../Utils/ByteReader.hpp"
+#include "../Utils/BaseDataTypes.h"
 #include <vector>
 #include <string>
 #include <map>

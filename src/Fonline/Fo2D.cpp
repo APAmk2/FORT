@@ -90,7 +90,7 @@ Fo2D_t::Fo2D_t(ByteReader* reader)
 		hdr = new hdr_t;
 		hdr->frames_count = reader->u16();
 		hdr->anim_ticks = reader->u32();
-		hdr->dirs = reader->u16();
+		hdr->dirs = reader->u8();
 
 		for (uint16_t dir = 0; dir < hdr->dirs; dir++)
 		{

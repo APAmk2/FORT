@@ -1,9 +1,11 @@
 #pragma once
 
-#include "./Utils/ByteReader.hpp"
-#include "./Utils/BaseDataTypes.h"
+#include "../Utils/ByteReader.hpp"
+#include "../Utils/BaseDataTypes.h"
 #include <vector>
 #include <string>
+
+extern std::string gamePath;
 
 class tile_t
 {
@@ -122,10 +124,10 @@ public:
 	uint32_t mapElev = 0;
 	uint8_t PIDType = 0;
 	uint16_t PIDNum = 0;
-	//int32_t critIndex = -1;
+	int32_t critIndex = -1;
 	uint32_t lightRadius = 0;
 	uint32_t lightIntense = 0;
-	//uint32_t outlineColor = 0;
+	uint32_t outlineColor = 0;
 	int32_t scriptID = 0;
 	uint32_t invenSize = 0;
 	uint32_t critInvenSlots = 0;

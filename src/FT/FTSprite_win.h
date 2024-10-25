@@ -2,8 +2,8 @@
 
 #include "SDL.h"
 #include "FTSprite.h"
-#include "./Utils/ByteReader.hpp"
-#include "./Utils/BaseToolWindow.h"
+#include "../Utils/ByteReader.hpp"
+#include "../Utils/BaseToolWindow.h"
 #include <vector>
 #include <string>
 

@@ -9,6 +9,7 @@ const string protoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Til
 std::vector<std::vector<std::string>> protoLsts;
 bool lstsReady = false;
 uint32_t mapVer = 0;
+std::string gamePath = "Fallout/F2/";
 
 tile_t::tile_t(ByteReader* reader)
 {
@@ -82,16 +83,10 @@ void skip_scripts(ByteReader* reader)
 					// number of scripts in this batch (sequence)
 					uint32_t cur_check = reader->u32();
 
-					printf("Current script check for sequence %i is %i, j = %i\n", script_section, cur_check, j);
-
 					check += cur_check;
 
 					reader->u32(); // uknown
 				}
-			}
-			if (check != script_section_count) 
-			{
-				printf( "Error reading scripts: check is incorrect" );
 			}
 		}
 	}
@@ -103,8 +98,7 @@ void SetupProtoLsts()
 	for (int i = 0; i < 6; i++)
 	{
 		std::string currString;
-		std::string path = "Fallout/";
-		path += (mapVer == 19 ? "F1/proto/" : "F2/proto/") + protoTypeNames[i] + "/" + protoTypeNames[i] + ".LST";
+		std::string path = gamePath + "proto/" + protoTypeNames[i] + "/" + protoTypeNames[i] + ".LST";
 		std::ifstream input(path);
 		if (input.is_open())
 		{
@@ -204,10 +198,10 @@ mapObject_t::mapObject_t(ByteReader* reader)
 	PIDType = reader->u8();
 	reader->u8();
 	PIDNum = reader->u16();
-	int32_t critIndex = reader->u32();
+	critIndex = reader->u32();
 	lightRadius = reader->u32();
 	lightIntense = reader->u32();
-	uint32_t outlineColor = reader->u32();
+	outlineColor = reader->u32();
 	reader->u32();
 	scriptID = reader->i32();
 	invenSize = reader->u32();
@@ -224,10 +218,8 @@ mapObject_t::mapObject_t(ByteReader* reader)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = "Fallout/";
-		path += (mapVer == 19 ? "F1/proto/" : "F2/proto/");
-		path += protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
-		if (!protoReader->Reset(path, ByteReader::LittleEndian)) return;
+		std::string path = gamePath + "proto/" + protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
+		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
 		file->filename = protoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
@@ -260,10 +252,8 @@ mapObject_t::mapObject_t(ByteReader* reader)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = "Fallout/";
-		path += (mapVer == 19 ? "F1/proto/" : "F2/proto/");
-		path += protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
-		if (!protoReader->Reset(path, ByteReader::LittleEndian)) return;
+		std::string path = gamePath + "proto/" + protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
+		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
 		file->filename = protoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();

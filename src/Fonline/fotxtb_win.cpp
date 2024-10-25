@@ -12,7 +12,7 @@ bool readFotxtb(std::filesystem::path& filename, Fotxtb_t*& file)
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
-	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
+	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
 	file = new Fotxtb_t(reader);
 	file->filename = filename.stem().string();
 	reader->Close();

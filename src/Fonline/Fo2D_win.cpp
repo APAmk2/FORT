@@ -2,10 +2,7 @@
 #include "imgui.h"
 #include "lodepng.h"
 #include "imgui_stdlib.h"
-#include <stdio.h>
 #include <filesystem>
-
-using namespace std;
 
 int frameCounter = 0;
 
@@ -15,7 +12,7 @@ bool readFonline2D(std::filesystem::path& filename, Fo2D_t*& file)
 	file = nullptr;
 	frameCounter = 0;
 	ByteReader* reader = new ByteReader;
-	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
+	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
 	file = new Fo2D_t(reader);
     file->filename = filename.stem().string();
 	reader->Close();
@@ -44,7 +41,7 @@ void exportFonline2D(Fo2D_t*& file)
 				image[i * 4 + 3] = currFrame_ptr->pixels[i].a;
 			}
 
-			unsigned error = lodepng::encode((file->filename + "_" + to_string(currData) + "_" + to_string(currFrame)) + ".png", image, width, height);
+			unsigned error = lodepng::encode((file->filename + "_" + std::to_string(currData) + "_" + std::to_string(currFrame)) + ".png", image, width, height);
 			if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 		}
 	}
@@ -116,7 +113,7 @@ void Fo2DWindow::drawWindow()
 	ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
 	if (ImGui::Button("Load File"))
 	{
-		filesystem::path filepath = Fo2Dfilename;
+		std::filesystem::path filepath = Fo2Dfilename;
 		readFonline2D(filepath, Fo2DFile);
 	}
 	ImGui::SameLine();
@@ -128,9 +125,10 @@ void Fo2DWindow::drawWindow()
 	if (Fo2DFile != nullptr && Fo2DFPSTimer <= SDL_GetTicks())
 	{
 		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir, &Fo2DTex, renderer);
-		Fo2DFPSTimer += Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count;
+		Fo2DFPSTimer = SDL_GetTicks() + ( Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count);
 	}
 	ImGui::Image((void*)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
+
 	ImGui::End();
 }
 

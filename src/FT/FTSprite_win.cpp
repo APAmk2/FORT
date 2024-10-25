@@ -12,7 +12,7 @@ bool readFTSprite(std::filesystem::path& filename, FTSprite_t*& file)
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
-	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
+	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
 	file = new FTSprite_t(reader);
 	file->filename = filename.stem().string();
 	reader->Close();
@@ -59,7 +59,7 @@ void FTSpriteWindow::drawWindow()
 		static int selected = 0;
 		{
 			ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
-			for (int i = 0; i < FTSFile->seq_count; i++)
+			for (uint32_t i = 0; i < FTSFile->seq_count; i++)
 			{
 				if (ImGui::Selectable(FTSFile->seq_hdrs[i].seq_name.c_str(), selected == i))
 					selected = i;
@@ -91,9 +91,9 @@ void FTSpriteWindow::drawWindow()
 			ImGui::EndChild();
 			ImGui::EndGroup();
 		}
+		ImGui::Image((void*)(intptr_t)FTSTex, ImVec2(640, 480));
 	}
-
-	ImGui::Image((void*)(intptr_t)FTSTex, ImVec2(640, 480));
+	
 	ImGui::End();
 }
 void FTSpriteWindow::initWindow()
