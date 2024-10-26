@@ -6,12 +6,13 @@
 #include <string>
 #include <map>
 
-class Fotxtb_t
+class FoTxtb_t
 {
 public:
-	std::string filename = "";
-	uint32_t entriesCount = 0;
-	std::map<uint32_t, std::string> entries;
+	uint32_t EntriesCount = 0;
+	std::map<uint32_t, std::string> Entries;
 
-	Fotxtb_t(ByteReader* reader);
+	std::string Filename = "";
+
+	FoTxtb_t(ByteReader* reader);
 };

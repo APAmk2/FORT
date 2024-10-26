@@ -1,69 +1,66 @@
-#include "fotxtb_win.h"
+#include "FoTxtb_win.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
-#include <stdio.h>
 #include <filesystem>
 #include <fstream>
 
-using namespace std;
-
-bool readFotxtb(std::filesystem::path& filename, Fotxtb_t*& file)
+bool ReadFoTxtb(std::filesystem::path& filename, FoTxtb_t*& file)
 {
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
 	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
-	file = new Fotxtb_t(reader);
-	file->filename = filename.stem().string();
+	file = new FoTxtb_t(reader);
+	file->Filename = filename.stem().string();
 	reader->Close();
 	delete reader;
 
 	return true;
 }
 
-void exportFotxtb(Fotxtb_t*& file)
+void ExportFoTxtb(FoTxtb_t*& file)
 {
 	std::string str = "";
-	for (const auto& [key, val] : file->entries)
+	for (const auto& [key, val] : file->Entries)
 	{
-		str += "{" + to_string(key) + "}{}{" + val + "}\n";
+		str += "{" + std::to_string(key) + "}{}{" + val + "}\n";
 	}
 
-	ofstream out;
-	out.open(file->filename + ".txt");
+	std::ofstream out;
+	out.open(file->Filename + ".txt");
 	if (out.is_open())
 	{
-		out << str << endl;
+		out << str << std::endl;
 	}
 	out.close();
 }
 
-void FotxtbWindow::drawWindow()
+void FoTxtbWindow::DrawWin()
 {
-	if (!getVisible()) return;
+	if (!GetVisible()) return;
 	ImGui::Begin("Fonline TXTb Reading Tool");
 
-	ImGui::InputText("Fonline .fotxtb file path", &Fotxtbfilename);
+	ImGui::InputText("Fonline .fotxtb file path", &Filename);
 	if (ImGui::Button("Load File"))
 	{
-		filesystem::path filepath = Fotxtbfilename;
-		readFotxtb(filepath, FotxtbFile);
+		std::filesystem::path filepath = Filename;
+		ReadFoTxtb(filepath, File);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Export File"))
 	{
-		exportFotxtb(FotxtbFile);
+		ExportFoTxtb(File);
 	}
 
-	if (FotxtbFile != nullptr)
+	if (File != nullptr)
 	{
-		ImGui::Text("Entries:%i", FotxtbFile->entriesCount);
+		ImGui::Text("Entries:%i", File->EntriesCount);
 		ImGui::NewLine();
 		std::string strToDisplay = "";
 
-		for (const auto& [key, val] : FotxtbFile->entries)
+		for (const auto& [key, val] : File->Entries)
 		{
-			strToDisplay = "{" + to_string(key) + "}{}{" + val + "}";
+			strToDisplay = "{" + std::to_string(key) + "}{}{" + val + "}";
 			ImGui::TextUnformatted(strToDisplay.c_str());
 		}
 	}
@@ -71,5 +68,5 @@ void FotxtbWindow::drawWindow()
 	ImGui::End();
 }
 
-void FotxtbWindow::initWindow()
+void FoTxtbWindow::InitWin()
 {}

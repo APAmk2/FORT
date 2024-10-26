@@ -8,12 +8,12 @@
 class FrmFrame_t
 {
 public:
-	uint16_t width = 1;
-	uint16_t height = 1;
-	uint32_t frameSize = 1;
-	int16_t xShift = 0;
-	int16_t yShift = 0;
-	std::vector<uint8_t> frameData;
+	uint16_t Width = 1;
+	uint16_t Height = 1;
+	uint32_t FrameSize = 1;
+	int16_t XShift = 0;
+	int16_t YShift = 0;
+	std::vector<uint8_t> FrameData;
 
 	FrmFrame_t(ByteReader* reader);
 };
@@ -22,18 +22,18 @@ class FallFrm_t
 {
 public:
 	//Header
-	uint32_t version = 4;
-	uint16_t fps = 8;
-	uint16_t actionFrame = 0;
-	uint16_t framesPerDir = 1;
-	std::vector<int16_t> xShift;
-	std::vector<int16_t> yShift;
-	std::vector<uint32_t> dataShift;
-	uint32_t dataSize = 1;
+	uint32_t Version = 4;
+	uint16_t Fps = 8;
+	uint16_t ActionFrame = 0;
+	uint16_t FramesPerDir = 1;
+	std::vector<int16_t> XShift;
+	std::vector<int16_t> YShift;
+	std::vector<uint32_t> DataShift;
+	uint32_t DataSize = 1;
 	//Data
-	std::vector<FrmFrame_t*> frames;
+	std::vector<FrmFrame_t*> Frames;
 
-	uint8_t dirs = 6;
+	uint8_t DirCount = 6;
 
 	FallFrm_t(ByteReader* reader);
 };

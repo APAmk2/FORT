@@ -5,31 +5,29 @@
 #include <fstream>
 #include <format>
 
-using namespace std;
-
-const string frmType[8] = { "items", "critters", "scenery", "walls", "tiles", "backgrnd", "intrface", "inven" };
-const string protoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Tiles", "Misc" };
+const std::string FrmType[8] = { "items", "critters", "scenery", "walls", "tiles", "backgrnd", "intrface", "inven" };
+const std::string ProtoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Tiles", "Misc" };
 
 std::vector<std::string> tiles_names;
 
-bool readFallMap(std::filesystem::path& filename, FallMap_t*& file)
+bool ReadFallMap(std::filesystem::path& filename, FallMap_t*& file)
 {
 	delete file;
 	file = nullptr;
 	ByteReader* reader = new ByteReader;
 	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
 	file = new FallMap_t(reader);
-	file->filename = filename.stem().string();
+	file->Filename = filename.stem().string();
 	reader->Close();
 	delete reader;
 
 	return true;
 }
 
-void exportFallMap(FallMap_t*& file)
+void ExportFallMap(FallMap_t*& file)
 {
-	ofstream out;
-	out.open(file->filename + ".fomap");
+	std::ofstream out;
+	out.open(file->Filename + ".fomap");
 	if (out.is_open())
 	{
 		out << std::format("[{}]\n", "Header");
@@ -37,7 +35,7 @@ void exportFallMap(FallMap_t*& file)
 		out << std::format("{:20} {}\n", "MaxHexX", 200);
 
 		int mapHexY = 200;
-		switch (file->mapFlags & 0xE)
+		switch (file->MapFlags & 0xE)
 		{
 		case 0x0c:
 			mapHexY = 200;
@@ -68,7 +66,7 @@ void exportFallMap(FallMap_t*& file)
 
 		int tilesLen = 10000;
 
-		switch (file->mapFlags & 0xE)
+		switch (file->MapFlags & 0xE)
 		{
 		case 0x0c:
 			tilesLen = 10000;
@@ -83,61 +81,61 @@ void exportFallMap(FallMap_t*& file)
 
 		for (int i = 0; i < tilesLen; i++)
 		{
-			tile_t currentTile = file->tiles[i];
+			FallMapTile_t currentTile = file->Tiles[i];
 			int X = (i % 100) * 2;
 			int Y = (i / 100) * 2;
 
-			if (currentTile.floorId > 1) out << std::format("{:10} {:<4} {:<4}           {}\n", "tile", X, Y, ("art\\tiles\\" + tiles_names[currentTile.floorId]));
-			if (currentTile.tileId > 1) out << std::format("{:10} {:<4} {:<4}           {}\n", "roof", X, Y, ("art\\tiles\\" + tiles_names[currentTile.tileId]));
+			if (currentTile.TileId > 1) out << std::format("{:10} {:<4} {:<4}           {}\n", "tile", X, Y, ("art\\tiles\\" + tiles_names[currentTile.TileId]));
+			if (currentTile.RoofId > 1) out << std::format("{:10} {:<4} {:<4}           {}\n", "roof", X, Y, ("art\\tiles\\" + tiles_names[currentTile.RoofId]));
 		}
 
 		out << "\n";
 		out << std::format("[{}]\n", "Objects");
 		out << std::format("{:20} {}\n", "MapObjType", 2);
 		out << std::format("{:20} {}\n", "ProtoId", 3853);
-		out << std::format("{:20} {}\n", "MapX", (file->defChosPos % 200));
-		out << std::format("{:20} {}\n", "MapY", ((file->defChosPos / 200) + (200 * file->defChosElv)));
-		out << std::format("{:20} {}\n", "Scenery_ToDir", file->defChosDir);
+		out << std::format("{:20} {}\n", "MapX", (file->DefChosPos % 200));
+		out << std::format("{:20} {}\n", "MapY", ((file->DefChosPos / 200) + (200 * file->DefChosElv)));
+		out << std::format("{:20} {}\n", "Scenery_ToDir", file->DefChosDir);
 
-		for (size_t i = 0, len = file->totalObjects; i < len; i++)
+		for (size_t i = 0, len = file->TotalObjects; i < len; i++)
 		{
-			mapObject_t currObject = file->objects[i];
+			FallMapObject_t currObject = file->Objects[i];
 			
-			if (currObject.objectPos == -1) continue;
+			if (currObject.ObjectPos == -1) continue;
 
 			if (currObject.PIDType == 0 ) // Items
 			{
 				out << std::format("{:20} {}\n", "MapObjType", 1);
 				out << std::format("{:20} {}\n", "ProtoId", currObject.PIDNum);
 
-				int objX = (currObject.objectPos % 200);
-				int objY = (currObject.objectPos / 200) + (200 * currObject.mapElev);
+				int objX = (currObject.ObjectPos % 200);
+				int objY = (currObject.ObjectPos / 200) + (200 * currObject.MapElev);
 				out << std::format("{:20} {}\n", "MapX", objX);
 				out << std::format("{:20} {}\n", "MapY", objY);
-				if (currObject.weapData != nullptr)
+				if (currObject.WeapData != nullptr)
 				{
-					if (currObject.weapData->ammoPid > 0)
+					if (currObject.WeapData->AmmoPid > 0)
 					{
-						out << std::format("{:20} {}\n", "Item_AmmoPid", currObject.weapData->ammoPid);
+						out << std::format("{:20} {}\n", "Item_AmmoPid", currObject.WeapData->AmmoPid);
 					}
-					if (currObject.weapData->ammoCount > 0)
+					if (currObject.WeapData->AmmoCount > 0)
 					{
-						out << std::format("{:20} {}\n", "Item_AmmoCount", currObject.weapData->ammoCount);
+						out << std::format("{:20} {}\n", "Item_AmmoCount", currObject.WeapData->AmmoCount);
 					}
 				}
-				if (currObject.keyData != nullptr)
+				if (currObject.KeyData != nullptr)
 				{
-					if (currObject.keyData->keyCode > 0)
+					if (currObject.KeyData->KeyCode > 0)
 					{
-						out << std::format("{:20} {}\n", "Item_LockerDoorId", currObject.keyData->keyCode);
+						out << std::format("{:20} {}\n", "Item_LockerDoorId", currObject.KeyData->KeyCode);
 					}
 				}
 
-				if (currObject.doorData != nullptr)
+				if (currObject.DoorData != nullptr)
 				{
-					if (currObject.doorData->walkThru > 0)
+					if (currObject.DoorData->WalkThru > 0)
 					{
-						out << std::format("{:20} {}\n", "Item_LockerCondition", currObject.doorData->walkThru);
+						out << std::format("{:20} {}\n", "Item_LockerCondition", currObject.DoorData->WalkThru);
 					}
 				}
 			}
@@ -147,11 +145,11 @@ void exportFallMap(FallMap_t*& file)
 				out << std::format("{:20} {}\n", "MapObjType", 0);
 				out << std::format("{:20} {}\n", "ProtoId", currObject.PIDNum);
 
-				int objX = (currObject.objectPos % 200);
-				int objY = (currObject.objectPos / 200) + (200 * currObject.mapElev);
+				int objX = (currObject.ObjectPos % 200);
+				int objY = (currObject.ObjectPos / 200) + (200 * currObject.MapElev);
 				out << std::format("{:20} {}\n", "MapX", objX);
 				out << std::format("{:20} {}\n", "MapY", objY);
-				out << std::format("{:20} {}\n", "Dir", currObject.dir);
+				out << std::format("{:20} {}\n", "Dir", currObject.Dir);
 				out << std::format("{:20} {}\n", "Critter_Cond", 1);
 				out << std::format("{:20} {}\n", "Critter_ParamIndex0", "ST_DIALOG_ID");
 				out << std::format("{:20} {}\n", "Critter_ParamValue0", 0);
@@ -160,7 +158,7 @@ void exportFallMap(FallMap_t*& file)
 				out << std::format("{:20} {}\n", "Critter_ParamIndex2", "ST_BAG_ID");
 				out << std::format("{:20} {}\n", "Critter_ParamValue2", 0);
 				out << std::format("{:20} {}\n", "Critter_ParamIndex3", "ST_TEAM_ID");
-				out << std::format("{:20} {}\n", "Critter_ParamValue3", currObject.critData->groupId);
+				out << std::format("{:20} {}\n", "Critter_ParamValue3", currObject.CritData->GroupId);
 				out << std::format("{:20} {}\n", "Critter_ParamIndex4", "ST_NPC_ROLE");
 				out << std::format("{:20} {}\n", "Critter_ParamValue4", 0);
 				out << std::format("{:20} {}\n", "Critter_ParamIndex5", "ST_REPLICATION_TIME");
@@ -172,8 +170,8 @@ void exportFallMap(FallMap_t*& file)
 				out << std::format("{:20} {}\n", "MapObjType", 2);
 				out << std::format("{:20} {}\n", "ProtoId", 2000 + currObject.PIDNum);
 
-				int objX = (currObject.objectPos % 200);
-				int objY = (currObject.objectPos / 200) + (200 * currObject.mapElev);
+				int objX = (currObject.ObjectPos % 200);
+				int objY = (currObject.ObjectPos / 200) + (200 * currObject.MapElev);
 				out << std::format("{:20} {}\n", "MapX", objX);
 				out << std::format("{:20} {}\n", "MapY", objY);
 			}
@@ -183,8 +181,8 @@ void exportFallMap(FallMap_t*& file)
 				out << std::format("{:20} {}\n", "MapObjType", 2);
 				out << std::format("{:20} {}\n", "ProtoId", 5000 + currObject.PIDNum);
 
-				int objX = (currObject.objectPos % 200);
-				int objY = (currObject.objectPos / 200) + (200 * currObject.mapElev);
+				int objX = (currObject.ObjectPos % 200);
+				int objY = (currObject.ObjectPos / 200) + (200 * currObject.MapElev);
 				out << std::format("{:20} {}\n", "MapX", objX);
 				out << std::format("{:20} {}\n", "MapY", objY);
 			}
@@ -194,21 +192,21 @@ void exportFallMap(FallMap_t*& file)
 				out << std::format("{:20} {}\n", "MapObjType", 2);
 				out << std::format("{:20} {}\n", "ProtoId", 4000 + currObject.PIDNum);
 
-				int objX = (currObject.objectPos % 200);
-				int objY = (currObject.objectPos / 200) + (200 * currObject.mapElev);
+				int objX = (currObject.ObjectPos % 200);
+				int objY = (currObject.ObjectPos / 200) + (200 * currObject.MapElev);
 				out << std::format("{:20} {}\n", "MapX", objX);
 				out << std::format("{:20} {}\n", "MapY", objY);
 			}
 
 			if (currObject.PIDType != 4) //Shared data
 			{
-				if (currObject.lightRadius > 0)
+				if (currObject.LightRadius > 0)
 				{
-					out << std::format("{:20} {}\n", "LightDistance", currObject.lightRadius);
+					out << std::format("{:20} {}\n", "LightDistance", currObject.LightRadius);
 				}
-				if (currObject.lightIntense > 0)
+				if (currObject.LightIntense > 0)
 				{
-					out << std::format("{:20} {}\n", "LightIntensity", currObject.lightIntense);
+					out << std::format("{:20} {}\n", "LightIntensity", currObject.LightIntense);
 				}
 
 				out << "\n";
@@ -219,71 +217,71 @@ void exportFallMap(FallMap_t*& file)
 	out.close();
 }
 
-void FallMapWindow::drawWindow()
+void FallMapWindow::DrawWin()
 {
-	if (!getVisible()) return;
+	if (!GetVisible()) return;
 	ImGui::Begin("Fallout .map Reading Tool");
 
-	ImGui::InputText("Fallout .map file path", &fallMapfilename);
-	ImGui::InputText("Fallout Game Path", &gamePath);
+	ImGui::InputText("Fallout .map file path", &Filename);
+	ImGui::InputText("Fallout Game Path", &GamePath);
 	if (ImGui::Button("Load File"))
 	{
-		filesystem::path filepath = fallMapfilename;
-		readFallMap(filepath, fallMapFile);
+		std::filesystem::path filepath = Filename;
+		ReadFallMap(filepath, File);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Export File"))
 	{
-		exportFallMap(fallMapFile);
+		ExportFallMap(File);
 	}
 
-	if (fallMapFile != nullptr)
+	if (File != nullptr)
 	{
 		ImGui::BeginChild("Map", ImVec2(100, 0), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX | ImGuiChildFlags_ResizeY);
-		ImGui::Text("Ver: %i", fallMapFile->version);
-		ImGui::Text("Name: %s", fallMapFile->mapName.c_str());
-		ImGui::Text("Default Chosen Pos: %i", fallMapFile->defChosPos);
-		ImGui::Text("Default Chosen Elevation: %i", fallMapFile->defChosElv);
-		ImGui::Text("Default Chosen Direction: %i", fallMapFile->defChosDir);
-		ImGui::Text("LVars Count: %i", fallMapFile->lVarsNum);
-		ImGui::Text("Script ID: %i", fallMapFile->scriptId);
-		ImGui::Text("Map Flags: %i", fallMapFile->mapFlags);
-		ImGui::Text("Map Darkness: %i", fallMapFile->mapDark);
-		ImGui::Text("GVars Count: %i", fallMapFile->gVarsNum);
-		ImGui::Text("Map ID: %i", fallMapFile->mapId);
-		ImGui::Text("Time since Epoch (Ticks): %i", fallMapFile->epochTime);
-		ImGui::Text("Tiles count: %i", fallMapFile->tiles.size());
+		ImGui::Text("Ver: %i", File->Version);
+		ImGui::Text("Name: %s", File->MapName.c_str());
+		ImGui::Text("Default Chosen Pos: %i", File->DefChosPos);
+		ImGui::Text("Default Chosen Elevation: %i", File->DefChosElv);
+		ImGui::Text("Default Chosen Direction: %i", File->DefChosDir);
+		ImGui::Text("LVars Count: %i", File->LVarsNum);
+		ImGui::Text("Script ID: %i", File->ScriptId);
+		ImGui::Text("Map Flags: %i", File->MapFlags);
+		ImGui::Text("Map Darkness: %i", File->MapDark);
+		ImGui::Text("GVars Count: %i", File->GVarsNum);
+		ImGui::Text("Map ID: %i", File->MapId);
+		ImGui::Text("Time since Epoch (Ticks): %i", File->EpochTime);
+		ImGui::Text("Tiles count: %i", File->Tiles.size());
 		ImGui::EndChild();
 
 		ImGui::BeginChild("TESTOBJECT", ImVec2(100, 0), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX | ImGuiChildFlags_ResizeY);
-		int objX = (fallMapFile->objects[0].objectPos % 200);
-		int objY = (fallMapFile->objects[0].objectPos / 200) + (200 * fallMapFile->objects[0].mapElev);
+		int objX = (File->Objects[0].ObjectPos % 200);
+		int objY = (File->Objects[0].ObjectPos / 200) + (200 * File->Objects[0].MapElev);
 		ImGui::Text("Object Position: X%i Y%i", objX, objY);
-		ImGui::Text("Object Frame Num: %i", fallMapFile->objects[0].frameNum);
-		ImGui::Text("Object Direction: %i", fallMapFile->objects[0].dir);
-		ImGui::Text("Object FID Type: %s", frmType[fallMapFile->objects[0].FIDType].c_str());
-		ImGui::Text("Object FID .LST Num: %i", fallMapFile->objects[0].FIDNum);
-		ImGui::Text("Object Flags: %i", fallMapFile->objects[0].flags);
-		ImGui::Text("Object Map Elevation: %i", fallMapFile->objects[0].mapElev);
-		ImGui::Text("Object PID Type: %s", protoTypeNames[fallMapFile->objects[0].PIDType].c_str());
-		ImGui::Text("Object PID .LST Num: %i", fallMapFile->objects[0].PIDNum);
-		//ImGui::Text("Object Crit Index: %i", fallMapFile->objects[0].critIndex);
-		ImGui::Text("Object Light Radius: %i", fallMapFile->objects[0].lightRadius);
-		ImGui::Text("Object Light Intense: %i", fallMapFile->objects[0].lightIntense);
-		//ImGui::Text("Object Outline Color: %i", fallMapFile->objects[0].outlineColor);
-		ImGui::Text("Object Script ID: %i", fallMapFile->objects[0].scriptID);
-		ImGui::Text("Object Inventory Size: %i", fallMapFile->objects[0].invenSize);
-		ImGui::Text("Object Crit Inventory Slots: %i", fallMapFile->objects[0].critInvenSlots);
+		ImGui::Text("Object Frame Num: %i", File->Objects[0].FrameNum);
+		ImGui::Text("Object Direction: %i", File->Objects[0].Dir);
+		ImGui::Text("Object FID Type: %s", FrmType[File->Objects[0].FIDType].c_str());
+		ImGui::Text("Object FID .LST Num: %i", File->Objects[0].FIDNum);
+		ImGui::Text("Object Flags: %i", File->Objects[0].Flags);
+		ImGui::Text("Object Map Elevation: %i", File->Objects[0].MapElev);
+		ImGui::Text("Object PID Type: %s", ProtoTypeNames[File->Objects[0].PIDType].c_str());
+		ImGui::Text("Object PID .LST Num: %i", File->Objects[0].PIDNum);
+		//ImGui::Text("Object Crit Index: %i", File->Objects[0].CritIndex);
+		ImGui::Text("Object Light Radius: %i", File->Objects[0].LightRadius);
+		ImGui::Text("Object Light Intense: %i", File->Objects[0].LightIntense);
+		//ImGui::Text("Object Outline Color: %i", File->Objects[0].OutlineColor);
+		ImGui::Text("Object Script ID: %i", File->Objects[0].ScriptID);
+		ImGui::Text("Object Inventory Size: %i", File->Objects[0].InvenSize);
+		ImGui::Text("Object Crit Inventory Slots: %i", File->Objects[0].CritInvenSlots);
 		ImGui::EndChild();
 	}
 
 	ImGui::End();
 }
 
-void FallMapWindow::initWindow()
+void FallMapWindow::InitWin()
 {
-	string currString;
-	ifstream input(gamePath + "art/tiles/TILES.LST");
+	std::string currString;
+	std::ifstream input(GamePath + "art/tiles/TILES.LST");
 	if (input.is_open())
 	{
 		while (getline(input, currString))

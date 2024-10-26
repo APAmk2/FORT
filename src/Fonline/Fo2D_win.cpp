@@ -4,55 +4,55 @@
 #include "imgui_stdlib.h"
 #include <filesystem>
 
-int frameCounter = 0;
+int FrameCounter = 0;
 
-bool readFonline2D(std::filesystem::path& filename, Fo2D_t*& file)
+bool ReadFo2D(std::filesystem::path& filename, Fo2D_t*& file)
 {
 	delete file;
 	file = nullptr;
-	frameCounter = 0;
+	FrameCounter = 0;
 	ByteReader* reader = new ByteReader;
 	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
 	file = new Fo2D_t(reader);
-    file->filename = filename.stem().string();
+    file->Filename = filename.stem().string();
 	reader->Close();
 	delete reader;
 
 	return true;
 }
 
-void exportFonline2D(Fo2D_t*& file)
+void ExportFo2D(Fo2D_t*& file)
 {
-	for (size_t currData = 0; currData < file->hdr->dirs; currData++)
+	for (size_t currData = 0; currData < file->DirCount; currData++)
 	{
-		for (size_t currFrame = 0; currFrame < file->hdr->frames_count; currFrame++)
+		for (size_t currFrame = 0; currFrame < file->FrameCount; currFrame++)
 		{
-			frame_t* currFrame_ptr = &file->data[currData].frames[currFrame];
+			Fo2DFrame_t* currFramePtr = &file->Data[currData].Frames[currFrame];
 			std::vector<unsigned char> image;
 			
-			int width = currFrame_ptr->width;
-			int height = currFrame_ptr->height;
+			int width = currFramePtr->Width;
+			int height = currFramePtr->Height;
 			image.resize(width * height * 4);
 			for (size_t i = 0; i < width * height; i++)
 			{
-				image[i * 4] = currFrame_ptr->pixels[i].r;
-				image[i * 4 + 1] = currFrame_ptr->pixels[i].g;
-				image[i * 4 + 2] = currFrame_ptr->pixels[i].b;
-				image[i * 4 + 3] = currFrame_ptr->pixels[i].a;
+				image[i * 4] = currFramePtr->Pixels[i].r;
+				image[i * 4 + 1] = currFramePtr->Pixels[i].g;
+				image[i * 4 + 2] = currFramePtr->Pixels[i].b;
+				image[i * 4 + 3] = currFramePtr->Pixels[i].a;
 			}
 
-			unsigned error = lodepng::encode((file->filename + "_" + std::to_string(currData) + "_" + std::to_string(currFrame)) + ".png", image, width, height);
+			unsigned error = lodepng::encode((file->Filename + "_" + std::to_string(currData) + "_" + std::to_string(currFrame)) + ".png", image, width, height);
 			if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 		}
 	}
 }
 
-bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, SDL_Texture** Fo2DTex, SDL_Renderer* renderer)
+bool RenderFo2D(Fo2D_t* file, uint16_t& width, uint16_t& height, int16_t& dir, SDL_Texture** Fo2DTex, SDL_Renderer* renderer)
 {
-	frame_t* currFrame_ptr = &file->data[dir].frames[frameCounter];
+	Fo2DFrame_t* currFramePtr = &file->Data[dir].Frames[FrameCounter];
 	
 	SDL_DestroyTexture(*Fo2DTex);
-	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*)&currFrame_ptr->pixels[0], currFrame_ptr->width, currFrame_ptr->height, 4 * 8, 4 * currFrame_ptr->width,
+	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*)&currFramePtr->Pixels[0], currFramePtr->Width, currFramePtr->Height, 4 * 8, 4 * currFramePtr->Width,
 		0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
 	if (surface == nullptr) 
@@ -70,67 +70,67 @@ bool renderFonline2D(Fo2D_t* file, int& width, int& height, int& dir, SDL_Textur
 
 	SDL_FreeSurface(surface);
 	
-	width = currFrame_ptr->width;
-	height = currFrame_ptr->height;
+	width = currFramePtr->Width;
+	height = currFramePtr->Height;
 	
-	frameCounter++;
-	if (frameCounter >= file->data[dir].frames.size())
+	FrameCounter++;
+	if (FrameCounter >= file->Data[dir].Frames.size())
 	{
-		frameCounter = 0;
+		FrameCounter = 0;
 	}
 
 	return true;
 }
 
-void Fo2DWindow::drawWindow()
+void Fo2DWindow::DrawWin()
 {
-	if (!getVisible()) return;
+	if (!GetVisible()) return;
 	ImGui::Begin("Fonline 2D Graphics Tool");
 
-	ImGui::Text("Width:%i", Fo2Dwidth);
+	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
-	ImGui::Text("Height:%i", Fo2Dheight);
+	ImGui::Text("Height:%i", Height);
 	ImGui::SameLine();
-	ImGui::Text("FPS:%i", (Fo2DFile != nullptr ? (Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count) / 10 : 0));
+	ImGui::Text("FPS:%i", (File != nullptr ? (File->AnimTicks / File->FrameCount) / 10 : 0));
 	ImGui::SameLine();
-	ImGui::Text("Frames:%i/%i", frameCounter, (Fo2DFile != nullptr ? Fo2DFile->hdr->frames_count - 1: 0));
-	if (ImGui::Button("<") && Fo2DFile != nullptr)
+	ImGui::Text("Frames:%i/%i", FrameCounter, (File != nullptr ? File->FrameCount - 1: 0));
+	if (ImGui::Button("<") && File != nullptr)
 	{
-		Fo2DDir--;
-		if (Fo2DDir < 0) Fo2DDir = Fo2DFile->hdr->dirs - 1;
+		Dir--;
+		if (Dir < 0) Dir = File->DirCount - 1;
 	}
 	ImGui::SameLine();
-	ImGui::Text("Dir:%i/%i", Fo2DDir, (Fo2DFile != nullptr ? Fo2DFile->hdr->dirs - 1 : 0));
+	ImGui::Text("Dir:%i/%i", Dir, (File != nullptr ? File->DirCount - 1 : 0));
 	ImGui::SameLine();
-	if (ImGui::Button(">") && Fo2DFile != nullptr)
+	if (ImGui::Button(">") && File != nullptr)
 	{
-		Fo2DDir++;
-		if (Fo2DDir >= Fo2DFile->hdr->dirs) Fo2DDir = 0;
+		Dir++;
+		if (Dir >= File->DirCount) Dir = 0;
 	}
 
-	ImGui::Text("Filename:%s", (Fo2DFile != nullptr ? Fo2DFile->filename.c_str() : ""));
+	ImGui::Text("Filename:%s", (File != nullptr ? File->Filename.c_str() : ""));
 
-	ImGui::InputText("FOnline 2D Graphics file path", &Fo2Dfilename);
+	ImGui::InputText("FOnline 2D Graphics file path", &Filename);
 	if (ImGui::Button("Load File"))
 	{
-		std::filesystem::path filepath = Fo2Dfilename;
-		readFonline2D(filepath, Fo2DFile);
+		std::filesystem::path filepath = Filename;
+		ReadFo2D(filepath, File);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Export File"))
 	{
-		exportFonline2D(Fo2DFile);
+		ExportFo2D(File);
 	}
 
-	if (Fo2DFile != nullptr && Fo2DFPSTimer <= SDL_GetTicks())
+	if (File != nullptr && FPSTimer <= SDL_GetTicks())
 	{
-		renderFonline2D(Fo2DFile, Fo2Dwidth, Fo2Dheight, Fo2DDir, &Fo2DTex, renderer);
-		Fo2DFPSTimer = SDL_GetTicks() + ( Fo2DFile->hdr->anim_ticks / Fo2DFile->hdr->frames_count);
+		RenderFo2D(File, Width, Height, Dir, &Tex, Renderer);
+		FPSTimer = SDL_GetTicks() + (File->AnimTicks / File->FrameCount);
 	}
-	ImGui::Image((void*)Fo2DTex, ImVec2(Fo2Dwidth, Fo2Dheight));
+	ImGui::Image((void*)Tex, ImVec2(Width, Height));
 
 	ImGui::End();
 }
 
-void Fo2DWindow::initWindow()
+void Fo2DWindow::InitWin()
 {}

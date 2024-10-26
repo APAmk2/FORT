@@ -1,115 +1,101 @@
 #include "Fo2D.h"
-#include <stdio.h>
-
-using namespace std;
 
 #define DIRS_COUNT 6
 
-hdr_t::hdr_t(ByteReader* reader)
+Fo2DFrame_t::Fo2DFrame_t(ByteReader* reader)
 {
-	frames_count = reader->u16();
-	anim_ticks = reader->u16();
-	dirs = reader->u8();
-}
-
-data_t::data_t(ByteReader* reader, hdr_t* hdr_ptr)
-{
-	offs_x = reader->i16();
-	offs_y = reader->i16();
-	for (size_t i = 0; i < hdr_ptr->frames_count; i++)
+	Shared = reader->u8();
+	if(!Shared)
 	{
-		frame_t currFrame(reader);
-		frames.push_back(currFrame);
-	}
-}
-
-frame_t::frame_t(ByteReader* reader)
-{
-	is_shared = reader->u8() > 0;
-	if(!is_shared)
-	{
-		width = reader->u16();
-		height = reader->u16();
-		next_x = reader->i16();
-		next_y = reader->i16();
-		for (size_t i = 0, len = width * height; i < len; i++)
+		Width = reader->u16();
+		Height = reader->u16();
+		NextX = reader->i16();
+		NextY = reader->i16();
+		for (size_t i = 0, len = Width * Height; i < len; i++)
 		{
-			ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
-			pixels.push_back(currPixel);
+			ColorRGBA currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
+			Pixels.push_back(currPixel);
 		}
 	}
 	else
 	{
-		shared_indx = reader->u16();
+		SharedIndex = reader->u16();
+	}
+}
+
+Fo2DData_t::Fo2DData_t(ByteReader* reader, uint16_t frameCount)
+{
+	XOffs = reader->i16();
+	YOffs = reader->i16();
+	for (size_t i = 0; i < frameCount; i++)
+	{
+		Fo2DFrame_t currFrame(reader);
+		Frames.push_back(currFrame);
 	}
 }
 
 Fo2D_t::Fo2D_t(ByteReader* reader)
 {
-	uint8_t check_num = reader->u8();
+	uint8_t checkNum = reader->u8();
 	reader->Pos(0);
 	uint32_t animSign = reader->u32();
 	reader->Pos(1);
-	if(check_num == 42 && animSign != 0xDEADBEEF)
+	if(checkNum == 42 && animSign != 0xDEADBEEF) // Latest Fo2D format
 	{
-		hdr = new hdr_t(reader);
+		FrameCount = reader->u16();
+		AnimTicks = reader->u16();
+		DirCount = reader->u8();
 
-		for (size_t i = 0; i < hdr->dirs; i++)
+		for (size_t i = 0; i < DirCount; i++)
 		{
-			data_t currData(reader, hdr);
-			data.push_back(currData);
+			Fo2DData_t currData(reader, FrameCount);
+			Data.push_back(currData);
 		}
 	}
-	else if(check_num != 137 && animSign != 0xDEADBEEF)
+	else if(checkNum != 137 && animSign != 0xDEADBEEF) // FOnline 2 (SDK Rev. 840) format
 	{
 		reader->Pos(0);
+		FrameCount = 1;
+		AnimTicks = 1;
+		DirCount = 1;
 
-		hdr = new hdr_t;
-		hdr->frames_count = 1;
-		hdr->anim_ticks = 1;
-		hdr->dirs = 1;
-
-		data_t newData;
-		newData.hdr_ptr = hdr;
-
-		frame_t newFrame;
-		newFrame.width = reader->u32();
-		newFrame.height = reader->u32();
+		Fo2DData_t newData;
+		Fo2DFrame_t newFrame;
+		newFrame.Width = reader->u32();
+		newFrame.Height = reader->u32();
 		//if (newFrame.width == 1196314761) return;
-		for (size_t i = 0, len = newFrame.width * newFrame.height; i < len; i++)
+		for (size_t i = 0, len = newFrame.Width * newFrame.Height; i < len; i++)
 		{
-			ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
-			newFrame.pixels.push_back(currPixel);
+			ColorRGBA currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
+			newFrame.Pixels.push_back(currPixel);
 		}
-		newData.frames.push_back(newFrame);
-		data.push_back(newData);
+		newData.Frames.push_back(newFrame);
+		Data.push_back(newData);
 	}
-	else if (animSign == 0xDEADBEEF)
+	else if (animSign == 0xDEADBEEF) // FOnline 2 (SDK Rev. 840) "Fast" format
 	{
 		reader->Pos(4);
-		hdr = new hdr_t;
-		hdr->frames_count = reader->u16();
-		hdr->anim_ticks = reader->u32();
-		hdr->dirs = reader->u8();
+		FrameCount = reader->u16();
+		AnimTicks = reader->u32();
+		DirCount = reader->u8();
 
-		for (uint16_t dir = 0; dir < hdr->dirs; dir++)
+		for (uint8_t dir = 0; dir < DirCount; dir++)
 		{
-			data_t newData;
-			newData.hdr_ptr = hdr;
-			for (uint16_t i = 0; i < hdr->frames_count; i++)
+			Fo2DData_t newData;
+			for (uint16_t i = 0; i < FrameCount; i++)
 			{
-				frame_t newFrame;
-				newFrame.width = reader->u16();
-				newFrame.height = reader->u16();
-				newData.offs_x = reader->u16();
-				newData.offs_y = reader->u16();
-				newFrame.next_x = reader->u16();
-				newFrame.next_y = reader->u16();
+				Fo2DFrame_t newFrame;
+				newFrame.Width = reader->u16();
+				newFrame.Height = reader->u16();
+				newData.XOffs = reader->u16();
+				newData.YOffs = reader->u16();
+				newFrame.NextX = reader->u16();
+				newFrame.NextY = reader->u16();
 
-				for (size_t i = 0, len = newFrame.width * newFrame.height; i < len; i++)
+				for (size_t i = 0, len = newFrame.Width * newFrame.Height; i < len; i++)
 				{
-					ucolor currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
-					newFrame.pixels.push_back(currPixel);
+					ColorRGBA currPixel{ reader->u8(), reader->u8(), reader->u8(), reader->u8() };
+					newFrame.Pixels.push_back(currPixel);
 				}
 			}
 		}

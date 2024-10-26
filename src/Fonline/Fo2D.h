@@ -5,50 +5,39 @@
 #include <vector>
 #include <string>
 
-class frame_t
+class Fo2DFrame_t
 {
 public:
-	bool is_shared = false;
-	uint16_t width = 0;
-	uint16_t height = 0;
-	int16_t next_x = 0;
-	int16_t next_y = 0;
-	std::vector<ucolor> pixels;
-	uint16_t shared_indx = 0;
+	bool Shared = false;
+	uint16_t Width = 0;
+	uint16_t Height = 0;
+	int16_t NextX = 0;
+	int16_t NextY = 0;
+	std::vector<ColorRGBA> Pixels;
+	uint16_t SharedIndex = 0;
 
-	frame_t(ByteReader* reader);
-	frame_t() {};
+	Fo2DFrame_t(ByteReader* reader);
+	Fo2DFrame_t() {};
 };
-
-class hdr_t
+class Fo2DData_t
 {
 public:
-	uint16_t frames_count = 0;
-	uint16_t anim_ticks = 0;
-	uint8_t dirs = 0;
+	int16_t XOffs = 0;
+	int16_t YOffs = 0;
+	std::vector<Fo2DFrame_t> Frames;
 
-	hdr_t(ByteReader* reader);
-	hdr_t() {};
-};
-
-class data_t
-{
-public:
-	hdr_t* hdr_ptr = nullptr;
-	int16_t offs_x = 0;
-	int16_t offs_y = 0;
-	std::vector<frame_t> frames;
-
-	data_t(ByteReader* reader, hdr_t* hdr_ptr);
-	data_t() {};
+	Fo2DData_t(ByteReader* reader, uint16_t frameCount);
+	Fo2DData_t() {};
 };
 
 class Fo2D_t
 {
 public:
-	hdr_t* hdr = nullptr;
-	std::vector<data_t> data;
-	std::string filename = "";
+	uint16_t FrameCount = 0;
+	uint16_t AnimTicks = 0;
+	uint8_t DirCount = 0;
+	std::vector<Fo2DData_t> Data;
+	std::string Filename = "";
 
 	Fo2D_t(ByteReader* reader);
 };

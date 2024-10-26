@@ -1,23 +1,20 @@
-#include "fotxtb.h"
-#include <stdio.h>
+#include "FoTxtb.h"
 
-using namespace std;
-
-Fotxtb_t::Fotxtb_t(ByteReader* reader)
+FoTxtb_t::FoTxtb_t(ByteReader* reader)
 {
-	entriesCount = reader->u32();
+	EntriesCount = reader->u32();
 	
-	for (uint32_t i = 0; i < entriesCount; i++)
+	for (uint32_t i = 0; i < EntriesCount; i++)
 	{
 		uint32_t key = reader->u32();
-		uint32_t str_size = reader->u32();
+		uint32_t strSize = reader->u32();
 
-		string val = "";
-		if (str_size > 0)
+		std::string val = "";
+		if (strSize)
 		{
-			val = reader->string(str_size);
+			val = reader->string(strSize);
 		}
 
-		entries.emplace(key, val);
+		Entries.emplace(key, val);
 	}
 }

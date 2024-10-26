@@ -1,34 +1,27 @@
 #include "FallMap.h"
 #include "FallProto.h"
-#include <stdio.h>
 
-using namespace std;
+const std::string ProtoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Tiles", "Misc" };
 
-const string protoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Tiles", "Misc" };
+std::vector<std::vector<std::string>> ProtoLsts;
+bool LstsReady = false;
+uint32_t MapVer = 0;
+std::string GamePath = "Fallout/F2/";
 
-std::vector<std::vector<std::string>> protoLsts;
-bool lstsReady = false;
-uint32_t mapVer = 0;
-std::string gamePath = "Fallout/F2/";
-
-tile_t::tile_t(ByteReader* reader)
+FallMapTile_t::FallMapTile_t(ByteReader* reader)
 {
-	tileId = reader->u16();
-	floorId = reader->u16();
+	RoofId = reader->u16();
+	TileId = reader->u16();
 }
 
 void skip_scripts(ByteReader* reader)
 {
 	for (size_t script_section = 0; script_section < 5; script_section++) 
 	{
-		uint32_t script_section_count = reader->u32(); // total number of scripts in section
-
-		printf("... script section has %i scripts\n", script_section_count);
-
+		uint32_t script_section_count = reader->u32();
 		if (script_section_count > 0) 
 		{
 			uint32_t loop = script_section_count;
-			// find the next multiple of 16 higher than the count
 			if (script_section_count % 16 > 0) 
 			{
 				loop += 16 - script_section_count % 16;
@@ -60,32 +53,16 @@ void skip_scripts(ByteReader* reader)
 					printf("Unknown script PID = %i\n", pid);
 					break;
 				}
-
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
-				reader->u32();
+				for (uint8_t i = 0; i < 14; i++)
+				{
+					reader->u32();
+				}
 
 				if ((j % 16) == 15) 
 				{
-
-					// TODO: write after the batch
-					// number of scripts in this batch (sequence)
 					uint32_t cur_check = reader->u32();
-
 					check += cur_check;
-
-					reader->u32(); // uknown
+					reader->u32();
 				}
 			}
 		}
@@ -94,155 +71,155 @@ void skip_scripts(ByteReader* reader)
 
 void SetupProtoLsts()
 {
-	protoLsts.resize(6);
+	ProtoLsts.resize(6);
 	for (int i = 0; i < 6; i++)
 	{
 		std::string currString;
-		std::string path = gamePath + "proto/" + protoTypeNames[i] + "/" + protoTypeNames[i] + ".LST";
+		std::string path = GamePath + "proto/" + ProtoTypeNames[i] + "/" + ProtoTypeNames[i] + ".LST";
 		std::ifstream input(path);
 		if (input.is_open())
 		{
 			while (getline(input, currString))
 			{
-				protoLsts[i].push_back(currString);
+				ProtoLsts[i].push_back(currString);
 			}
 		}
 		input.close();
 	}
 }
 
-critObject_t::critObject_t(ByteReader* reader)
+FallMapCritObject_t::FallMapCritObject_t(ByteReader* reader)
 {
-	playerReact = reader->u32();
-	currMP = reader->u32();
-	combatResult = reader->u32();
-	dmgLastTurn = reader->u32();
-	aiPack = reader->i32();
-	groupId = reader->u32();
-	enemy = reader->u32();
-	currHP = reader->u32();
-	currRAD = reader->u32();
-	currPoison = reader->u32();
+	PlayerReact = reader->u32();
+	CurrMP = reader->u32();
+	CombatResult = reader->u32();
+	DmgLastTurn = reader->u32();
+	AiPack = reader->i32();
+	GroupId = reader->u32();
+	Enemy = reader->u32();
+	CurrHP = reader->u32();
+	CurrRAD = reader->u32();
+	CurrPoison = reader->u32();
 }
 
-ammoObject_t::ammoObject_t(ByteReader* reader)
+FallMapAmmoObject_t::FallMapAmmoObject_t(ByteReader* reader)
 {
-	currAmmo = reader->u32();
+	CurrAmmo = reader->u32();
 }
 
-keyObject_t::keyObject_t(ByteReader* reader)
+FallMapKeyObject_t::FallMapKeyObject_t(ByteReader* reader)
 {
-	keyCode = reader->u32();
+	KeyCode = reader->u32();
 }
 
-miscObject_t::miscObject_t(ByteReader* reader)
+FallMapMiscObject_t::FallMapMiscObject_t(ByteReader* reader)
 {
-	charges = reader->u32();
+	Charges = reader->u32();
 }
 
-weapObject_t::weapObject_t(ByteReader* reader)
+FallMapWeapObject_t::FallMapWeapObject_t(ByteReader* reader)
 {
-	ammoCount = reader->u32();
-	ammoPid = reader->i32();
+	AmmoCount = reader->u32();
+	AmmoPid = reader->i32();
 }
 
-ladderObject_t::ladderObject_t(ByteReader* reader)
+FallMapLadderObject_t::FallMapLadderObject_t(ByteReader* reader)
 {
-	destHex = reader->u32();
-	if (mapVer == 20)
+	DestHex = reader->u32();
+	if (MapVer == 20)
 	{
-		destMap = reader->u32();
+		DestMap = reader->u32();
 	}
 }
 
-doorObject_t::doorObject_t(ByteReader* reader)
+FallMapStairsObject_t::FallMapStairsObject_t(ByteReader* reader)
 {
-	walkThru = reader->u32();
+	DestHex = reader->u32();
+	DestMap = reader->u32();
 }
 
-stairsObject_t::stairsObject_t(ByteReader* reader)
+FallMapDoorObject_t::FallMapDoorObject_t(ByteReader* reader)
 {
-	destHex = reader->u32();
-	destMap = reader->u32();
+	WalkThru = reader->u32();
 }
 
-elevObject_t::elevObject_t(ByteReader* reader)
+FallMapElevObject_t::FallMapElevObject_t(ByteReader* reader)
 {
-	elevType = reader->u32();
-	elevLevel = reader->u32();
+	ElevType = reader->u32();
+	ElevLevel = reader->u32();
 }
 
-gridObject_t::gridObject_t(ByteReader* reader)
+FallMapGridObject_t::FallMapGridObject_t(ByteReader* reader)
 {
-	toMapId = reader->u32();
-	chosPos = reader->u32();
-	mapElev = reader->u32();
-	chosDir = reader->u32();
+	ToMapId = reader->u32();
+	ChosPos = reader->u32();
+	MapElev = reader->u32();
+	ChosDir = reader->u32();
 }
 
-mapObject_t::mapObject_t(ByteReader* reader)
+FallMapObject_t::FallMapObject_t(ByteReader* reader)
 {
 	reader->u32();
-	objectPos = reader->i32();
+	ObjectPos = reader->i32();
 	reader->u32();
 	reader->u32();
 	reader->u32();
 	reader->u32();
-	frameNum = reader->u32();
-	dir = reader->u32();
+	FrameNum = reader->u32();
+	Dir = reader->u32();
 	FIDType = reader->u8();
 	reader->u8();
 	FIDNum = reader->u16();
-	flags = reader->u32();
-	mapElev = reader->u32();
+	Flags = reader->u32();
+	MapElev = reader->u32();
 	PIDType = reader->u8();
 	reader->u8();
 	PIDNum = reader->u16();
-	critIndex = reader->u32();
-	lightRadius = reader->u32();
-	lightIntense = reader->u32();
-	outlineColor = reader->u32();
+	CritIndex = reader->u32();
+	LightRadius = reader->u32();
+	LightIntense = reader->u32();
+	OutlineColor = reader->u32();
 	reader->u32();
-	scriptID = reader->i32();
-	invenSize = reader->u32();
-	critInvenSlots = reader->u32();
+	ScriptID = reader->i32();
+	InvenSize = reader->u32();
+	CritInvenSlots = reader->u32();
 	reader->u32();
 	reader->u32();
 
 	if (PIDType == PROTO_CRITTER)
 	{
-		critData = new critObject_t(reader);
+		CritData = new FallMapCritObject_t(reader);
 	}
 
 	if (PIDType == PROTO_ITEM)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = gamePath + "proto/" + protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
+		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
 		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
-		file->filename = protoLsts[PIDType][PIDNum - 1];
+		file->filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
 		delete protoReader;
 
 		if (file->itemPro->ammoData != nullptr)
 		{
-			ammoData = new ammoObject_t(reader);
+			AmmoData = new FallMapAmmoObject_t(reader);
 		}
 
 		if (file->itemPro->keyData != nullptr)
 		{
-			keyData = new keyObject_t(reader);
+			KeyData = new FallMapKeyObject_t(reader);
 		}
 
 		if (file->itemPro->miscData != nullptr)
 		{
-			miscData = new miscObject_t(reader);
+			MiscData = new FallMapMiscObject_t(reader);
 		}
 
 		if (file->itemPro->weapData != nullptr)
 		{
-			weapData = new weapObject_t(reader);
+			WeapData = new FallMapWeapObject_t(reader);
 		}
 
 		delete file;
@@ -252,31 +229,31 @@ mapObject_t::mapObject_t(ByteReader* reader)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = gamePath + "proto/" + protoTypeNames[PIDType] + "/" + protoLsts[PIDType][PIDNum - 1];
+		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
 		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
-		file->filename = protoLsts[PIDType][PIDNum - 1];
+		file->filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
 		delete protoReader;
 
 		if (file->scenPro->ladderData != nullptr)
 		{
-			ladderData = new ladderObject_t(reader);
+			LadderData = new FallMapLadderObject_t(reader);
 		}
 
 		if (file->scenPro->doorData != nullptr)
 		{
-			doorData = new doorObject_t(reader);
+			DoorData = new FallMapDoorObject_t(reader);
 		}
 
 		if (file->scenPro->stairData != nullptr)
 		{
-			stairsData = new stairsObject_t(reader);
+			StairsData = new FallMapStairsObject_t(reader);
 		}
 
 		if (file->scenPro->elevData != nullptr)
 		{
-			elevData = new elevObject_t(reader);
+			ElevData = new FallMapElevObject_t(reader);
 		}
 
 		delete file;
@@ -286,40 +263,40 @@ mapObject_t::mapObject_t(ByteReader* reader)
 	{
 		if (PIDNum >= 16 && PIDNum <= 23)
 		{
-			gridData = new gridObject_t(reader);
+			GridData = new FallMapGridObject_t(reader);
 		}
 	}
 }
 
 FallMap_t::FallMap_t(ByteReader* reader)
 {
-	version = reader->u32();
-	mapVer = version;
-	if (!lstsReady)
+	Version = reader->u32();
+	MapVer = Version;
+	if (!LstsReady)
 	{
 		SetupProtoLsts();
-		lstsReady = true;
+		LstsReady = true;
 	}
-	mapName = reader->string(16);
-	defChosPos = reader->i32();
-	defChosElv = reader->i32();
-	defChosDir = reader->i32();
-	lVarsNum = reader->i32();
-	scriptId = reader->i32();
-	mapFlags = reader->i32();
-	mapDark = reader->i32();
-	gVarsNum = reader->i32();
-	mapId = reader->i32();
-	epochTime = reader->u32();
+	MapName = reader->string(16);
+	DefChosPos = reader->i32();
+	DefChosElv = reader->i32();
+	DefChosDir = reader->i32();
+	LVarsNum = reader->i32();
+	ScriptId = reader->i32();
+	MapFlags = reader->i32();
+	MapDark = reader->i32();
+	GVarsNum = reader->i32();
+	MapId = reader->i32();
+	EpochTime = reader->u32();
 
-	for (int32_t i = 0; i < lVarsNum; i++)
+	for (int32_t i = 0; i < LVarsNum; i++)
 	{
-		lVars.push_back(reader->i32());
+		LVars.push_back(reader->i32());
 	}
 
-	for (int32_t i = 0; i < gVarsNum; i++)
+	for (int32_t i = 0; i < GVarsNum; i++)
 	{
-		gVars.push_back(reader->i32());
+		GVars.push_back(reader->i32());
 	}
 
 	for (uint8_t i = 0; i < 44; i++)
@@ -329,7 +306,7 @@ FallMap_t::FallMap_t(ByteReader* reader)
 
 	int tileLen = 10000;
 	int elevation = 1;
-	switch (mapFlags & 0xE)
+	switch (MapFlags & 0xE)
 	{
 	case 0x0c:
 		tileLen = 10000;
@@ -347,27 +324,27 @@ FallMap_t::FallMap_t(ByteReader* reader)
 
 	for (int i = 0; i < tileLen; i++)
 	{
-		tile_t currTile(reader);
-		tiles.push_back(currTile);
+		FallMapTile_t currTile(reader);
+		Tiles.push_back(currTile);
 	}
 
 	skip_scripts(reader);
 
-	totalObjects = reader->u32();
+	TotalObjects = reader->u32();
 	for (size_t elev = 0; elev < elevation; elev++) 
 	{
 		uint32_t objectsOnElevation = reader->u32();
 
 		for (size_t j = 0; j < objectsOnElevation; j++)
 		{
-			mapObject_t newObj(reader);
-			for (size_t i = 0; i < newObj.invenSize; i++)
+			FallMapObject_t newObj(reader);
+			for (size_t i = 0; i < newObj.InvenSize; i++)
 			{
 				uint32_t amount = reader->u32();
-				mapObject_t subObj(reader);
-				objects.push_back(subObj);
+				FallMapObject_t subObj(reader);
+				Objects.push_back(subObj);
 			}
-			objects.push_back(newObj);
+			Objects.push_back(newObj);
 		}
 	}
 }

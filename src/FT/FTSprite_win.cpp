@@ -33,7 +33,7 @@ bool renderFTSprite(FTSprite_t* file, int& width, int& height, int& dir, SDL_Tex
 
 void FTSpriteWindow::drawWindow()
 {
-	if (!getVisible()) return;
+	if (!GetVisible()) return;
 
 	ImGui::Begin("Fallout:Tactics Sprite Tool");
 	ImGui::Text("Width: %i", FTSwidth);

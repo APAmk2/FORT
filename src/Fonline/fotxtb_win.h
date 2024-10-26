@@ -6,13 +6,13 @@
 #include <vector>
 #include <string>
 
-class FotxtbWindow : public BaseToolWindow
+class FoTxtbWindow : public BaseToolWindow
 {
 public:
-	FotxtbWindow(bool visibility) : BaseToolWindow(visibility) { }
-	void drawWindow();
-	void initWindow();
+	FoTxtbWindow(bool visibility) : BaseToolWindow(visibility) { }
+	void DrawWin();
+	void InitWin();
 private:
-	std::string Fotxtbfilename = "test.fotxtb";
-	Fotxtb_t* FotxtbFile = nullptr;
+	std::string Filename = "test.fotxtb";
+	FoTxtb_t* File = nullptr;
 };

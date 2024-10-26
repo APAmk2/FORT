@@ -1,7 +1,6 @@
 #include "FallProto_win.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
-#include <stdio.h>
 #include <filesystem>
 #include <fstream>
 
@@ -430,7 +429,7 @@ void renderTileProto(TileProto_t* tilePro)
 
 void FallProtoWindow::drawWindow()
 {
-	if (!getVisible()) return;
+	if (!GetVisible()) return;
 	ImGui::Begin("Fallout .pro Reading Tool");
 
 	ImGui::InputText("Fallout .pro file path", &fallProtofilename);

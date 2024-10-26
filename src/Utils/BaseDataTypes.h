@@ -2,7 +2,7 @@
 
 #define ISFLAG(x, flag)     ( (x & flag) != 0 )
 
-struct ucolor
+struct ColorRGBA
 {
 	uint8_t r;
 	uint8_t g;
@@ -10,14 +10,14 @@ struct ucolor
 	uint8_t a;
 };
 
-struct color_rgb
+struct ColorRGB
 {
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
 };
 
-struct rect
+struct Rect
 {
 	uint32_t  x1; // left
 	uint32_t  y1; // top

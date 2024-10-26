@@ -10,12 +10,13 @@ class FallFRMWindow : public BaseToolWindow
 {
 public:
 	FallFRMWindow(bool visibility) : BaseToolWindow(visibility) { }
-	void drawWindow();
-	void initWindow();
+	void DrawWin();
+	void InitWin();
 private:
-	int FRMwidth = 0, FRMheight = 0, FRMDir = 0;
-	std::string FRMfilename = "test.frm";
-	FallFrm_t* FRMFile = nullptr;
-	uint32_t FRMFPSTimer = 0;
-	SDL_Texture* FRMTex = nullptr;
+	uint16_t Width = 0, Height = 0;
+	int16_t Dir = 0;
+	std::string Filename = "test.frm";
+	FallFrm_t* File = nullptr;
+	uint32_t FPSTimer = 0;
+	SDL_Texture* Tex = nullptr;
 };

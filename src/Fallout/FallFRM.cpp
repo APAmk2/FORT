@@ -2,44 +2,44 @@
 
 FrmFrame_t::FrmFrame_t(ByteReader* reader)
 {
-	width = reader->u16();
-	height = reader->u16();
-	frameSize = reader->u32();
-	xShift = reader->i16();
-	yShift = reader->i16();
-	for (size_t i = 0, len = width * height; i < len; i++)
+	Width = reader->u16();
+	Height = reader->u16();
+	FrameSize = reader->u32();
+	XShift = reader->i16();
+	YShift = reader->i16();
+	for (size_t i = 0, len = Width * Height; i < len; i++)
 	{
-		frameData.push_back(reader->u8());
+		FrameData.push_back(reader->u8());
 	}
 }
 
 FallFrm_t::FallFrm_t(ByteReader* reader)
 {
-	version = reader->u32();
-	fps = reader->u16();
-	actionFrame = reader->u16();
-	framesPerDir = reader->u16();
+	Version = reader->u32();
+	Fps = reader->u16();
+	ActionFrame = reader->u16();
+	FramesPerDir = reader->u16();
 	for (uint8_t i = 0; i < 6; i++)
 	{
-		xShift.push_back(reader->i16());
+		XShift.push_back(reader->i16());
 	}
 	for (uint8_t i = 0; i < 6; i++)
 	{
-		yShift.push_back(reader->i16());
+		YShift.push_back(reader->i16());
 	}
 	for (uint8_t i = 0; i < 6; i++)
 	{
-		dataShift.push_back(reader->u32());
+		DataShift.push_back(reader->u32());
 	}
-	dataSize = reader->u32();
-	for (size_t i = 0, len = framesPerDir * 6; i < len; i++)
+	DataSize = reader->u32();
+	for (size_t i = 0, len = FramesPerDir * 6; i < len; i++)
 	{
-		if ((dataSize > 0 && reader->CurrPos() > dataSize) || reader->CurrPos() >= reader->Bytes())
+		if ((DataSize > 0 && reader->CurrPos() > DataSize) || reader->CurrPos() >= reader->Bytes())
 		{
-			dirs = i / framesPerDir;
+			DirCount = i / FramesPerDir;
 			break;
 		}
 		FrmFrame_t* currFrame = new FrmFrame_t(reader);
-		frames.push_back(currFrame);
+		Frames.push_back(currFrame);
 	}
 }

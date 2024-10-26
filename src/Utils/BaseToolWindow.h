@@ -4,14 +4,14 @@ class BaseToolWindow
 {
 public:
 	BaseToolWindow() {};
-	BaseToolWindow(bool visibility) { this->visible = visibility; };
+	BaseToolWindow(bool visibility) { this->Visible = visibility; };
 
-	virtual void drawWindow() {};
-	virtual void initWindow() {};
-	virtual void setVisible(bool val) { this->visible = val; };
-	virtual bool getVisible() { return this->visible; };
+	virtual void DrawWin() {};
+	virtual void InitWin() {};
+	virtual void SetVisible(bool val) { this->Visible = val; };
+	virtual bool GetVisible() { return this->Visible; };
 
-	SDL_Renderer* renderer;
+	SDL_Renderer* Renderer = nullptr;
 private:
-	bool visible = true;
+	bool Visible = true;
 };

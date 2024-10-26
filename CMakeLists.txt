@@ -30,9 +30,9 @@ find_package(ZLIB REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
 set(NEW_FONLINE_FORMATS src/Fonline/Fo2D.cpp
-					src/Fonline/fotxtb.cpp)
+					src/Fonline/FoTxtb.cpp)
 set(NEW_FONLINE_WINDOWS src/Fonline/Fo2D_win.cpp
-					src/Fonline/fotxtb_win.cpp)
+					src/Fonline/FoTxtb_win.cpp)
 
 set(FT_FORMATS src/FT/FTSprite.cpp)
 set(FT_WINDOWS src/FT/FTSprite_win.cpp)

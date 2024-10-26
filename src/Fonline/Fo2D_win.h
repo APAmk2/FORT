@@ -10,12 +10,13 @@ class Fo2DWindow : public BaseToolWindow
 {
 public:
 	Fo2DWindow(bool visibility) : BaseToolWindow(visibility) { }
-	void drawWindow();
-	void initWindow();
+	void DrawWin();
+	void InitWin();
 private:
-	int Fo2Dwidth = 0, Fo2Dheight = 0, Fo2DDir = 0;
-	std::string Fo2Dfilename = "test.png";
-	Fo2D_t* Fo2DFile = nullptr;
-	uint32_t Fo2DFPSTimer = 0;
-	SDL_Texture* Fo2DTex = nullptr;
+	uint16_t Width = 0, Height = 0;
+	int16_t Dir = 0;
+	std::string Filename = "test.png";
+	Fo2D_t* File = nullptr;
+	uint32_t FPSTimer = 0;
+	SDL_Texture* Tex = nullptr;
 };

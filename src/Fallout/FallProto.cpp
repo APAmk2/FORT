@@ -1,7 +1,4 @@
 #include "FallProto.h"
-#include <stdio.h>
-
-using namespace std;
 
 FID_t::FID_t(ByteReader* reader)
 {

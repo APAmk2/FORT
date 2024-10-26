@@ -10,9 +10,9 @@ class FallMapWindow : public BaseToolWindow
 {
 public:
 	FallMapWindow(bool visibility) : BaseToolWindow(visibility) { }
-	void drawWindow();
-	void initWindow();
+	void DrawWin();
+	void InitWin();
 private:
-	std::string fallMapfilename = "test.fotxtb";
-	FallMap_t* fallMapFile = nullptr;
+	std::string Filename = "test.map";
+	FallMap_t* File = nullptr;
 };
