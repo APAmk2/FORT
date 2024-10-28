@@ -1,156 +1,147 @@
 #include "FallProto.h"
 
-FID_t::FID_t(ByteReader* reader)
-{
-	FIDType = reader->u8();
-	reader->u8();
-	FIDNum = reader->u16();
-}
-
 ItemArmorProto_t::ItemArmorProto_t(ByteReader* reader)
 {
 	AC = reader->i32();
 	for (size_t i = 0; i < 7; i++)
 	{
-		resists.push_back(reader->i32());
+		Resists.push_back(reader->i32());
 	}
 
 	for (size_t i = 0; i < 7; i++)
 	{
-		thresholds.push_back(reader->i32());
+		Thresholds.push_back(reader->i32());
 	}
 
-	perk = reader->i32();
-	maleCRType = new FID_t(reader);
-	femaleCRType = new FID_t(reader);
+	Perk = reader->i32();
+	MaleCRType = new PID_t(reader);
+	FemaleCRType = new PID_t(reader);
 }
 
 ItemContProto_t::ItemContProto_t(ByteReader* reader)
 {
-	maxVolume = reader->u32();
-	contFlags = reader->u32();
+	MaxVolume = reader->u32();
+	ContFlags = reader->u32();
 }
 
 ItemDrugProto_t::ItemDrugProto_t(ByteReader* reader)
 {
 	for (size_t i = 0; i < 3; i++)
 	{
-		stats.push_back(reader->i32());
+		Stats.push_back(reader->i32());
 	}
 	for (size_t i = 0; i < 3; i++)
 	{
-		firstMod.push_back(reader->i32());
+		FirstMod.push_back(reader->i32());
 	}
-	duration1 = reader->u32();
+	Duration1 = reader->u32();
 	for (size_t i = 0; i < 3; i++)
 	{
-		secondMod.push_back(reader->i32());
+		SecondMod.push_back(reader->i32());
 	}
-	duration2 = reader->u32();
+	Duration2 = reader->u32();
 	for (size_t i = 0; i < 3; i++)
 	{
-		thirdMod.push_back(reader->i32());
+		ThirdMod.push_back(reader->i32());
 	}
-	addictionRate = reader->u32();
-	addictionEffect = reader->u32();
-	addictionDelay = reader->u32();
+	AddictRate = reader->u32();
+	AddictEffect = reader->u32();
+	AddictDelay = reader->u32();
 }
 
 ItemWeapProto_t::ItemWeapProto_t(ByteReader* reader)
 {
-	animCode = reader->u32();
-	minDmg = reader->u32();
-	maxDmg = reader->u32();
-	dmgType = reader->u32();
-	maxRange1 = reader->u32();
-	maxRange2 = reader->u32();
-	projPID = new FID_t(reader);
-	minST = reader->u32();
-	apCost1 = reader->u32();
-	apCost2 = reader->u32();
-	critFail = reader->u32();
-	perk = reader->i32();
-	rounds = reader->u32();
-	caliber = reader->u32();
-	ammoPID = new FID_t(reader);
-	maxAmmo = reader->u32();
-	soundId = reader->u8();
+	AnimCode = reader->u32();
+	MinDmg = reader->u32();
+	MaxDmg = reader->u32();
+	DmgType = reader->u32();
+	MaxRange1 = reader->u32();
+	MaxRange2 = reader->u32();
+	ProjPID = new PID_t(reader);
+	MinST = reader->u32();
+	APCost1 = reader->u32();
+	APCost2 = reader->u32();
+	CritFail = reader->u32();
+	Perk = reader->i32();
+	Rounds = reader->u32();
+	Caliber = reader->u32();
+	AmmoPID = new PID_t(reader);
+	MaxAmmo = reader->u32();
+	SoundId = reader->u8();
 }
 
 ItemAmmoProto_t::ItemAmmoProto_t(ByteReader* reader)
 {
-	caliber = reader->u32();
-	quantity = reader->u32();
+	Caliber = reader->u32();
+	Quantity = reader->u32();
 	ACMod = reader->u32();
 	DRMod = reader->u32();
-	dmgMult = reader->i32();
-	dmgDiv = reader->i32();
+	DmgMult = reader->i32();
+	DmgDiv = reader->i32();
 }
 
 ItemMiscProto_t::ItemMiscProto_t(ByteReader* reader)
 {
-	powerPID = new FID_t(reader);
-	powerType = reader->u32();
-	charges = reader->u32();
+	PowerPID = new PID_t(reader);
+	PowerType = reader->u32();
+	Charges = reader->u32();
 }
 
 ItemKeyProto_t::ItemKeyProto_t(ByteReader* reader)
 {
-	keyID = reader->u32();
+	KeyID = reader->u32();
 }
 
 ItemProto_t::ItemProto_t(ByteReader* reader)
 {
-	flagsExt = reader->u32();
-	scriptId = reader->u32();
-	subtype = reader->u32();
-	material = reader->u32();
-	volume = reader->u32();
-	weight = reader->u32();
-	cost = reader->u32();
-	invFID = new FID_t(reader);
-	soundID = reader->u8();
+	FlagsExt = reader->u32();
+	ScriptId = reader->u32();
+	Subtype = reader->u32();
+	Material = reader->u32();
+	Volume = reader->u32();
+	Weight = reader->u32();
+	Cost = reader->u32();
+	InvFID = new PID_t(reader);
+	SoundID = reader->u8();
 
-	if (subtype == ITEM_TYPE_ARMOR)
+	if (Subtype == ITEM_TYPE_ARMOR)
 	{
-		armorData = new ItemArmorProto_t(reader);
+		ArmorData = new ItemArmorProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_CONTAINER)
+	else if (Subtype == ITEM_TYPE_CONTAINER)
 	{
-		contData = new ItemContProto_t(reader);
+		ContData = new ItemContProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_DRUG)
+	else if (Subtype == ITEM_TYPE_DRUG)
 	{
-		drugData = new ItemDrugProto_t(reader);
+		DrugData = new ItemDrugProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_WEAPON)
+	else if (Subtype == ITEM_TYPE_WEAPON)
 	{
-		weapData = new ItemWeapProto_t(reader);
+		WeapData = new ItemWeapProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_AMMO)
+	else if (Subtype == ITEM_TYPE_AMMO)
 	{
-		ammoData = new ItemAmmoProto_t(reader);
+		AmmoData = new ItemAmmoProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_MISC)
+	else if (Subtype == ITEM_TYPE_MISC)
 	{
-		miscData = new ItemMiscProto_t(reader);
+		MiscData = new ItemMiscProto_t(reader);
 	}
-	else if (subtype == ITEM_TYPE_KEY)
+	else if (Subtype == ITEM_TYPE_KEY)
 	{
-		keyData = new ItemKeyProto_t(reader);
+		KeyData = new ItemKeyProto_t(reader);
 	}
 }
 
 CritterProto_t::CritterProto_t(ByteReader* reader)
 {
-	actionFlags = reader->u32();
-	scriptType = reader->u8();
-	reader->u8();
-	scriptNum = reader->u16();
-	headFID = new FID_t(reader);
-	aiID = reader->u32();
-	teamID = reader->u32();
-	critFlags = reader->u32();
+	ActionFlags = reader->u32();
+	ScriptID = new PID_t(reader);
+	HeadFID = new PID_t(reader);
+	AiID = reader->u32();
+	TeamID = reader->u32();
+	CritFlags = reader->u32();
 	for (size_t i = 0; i < 7; i++)
 	{
 		SPECIAL.push_back(reader->i32());
@@ -158,166 +149,160 @@ CritterProto_t::CritterProto_t(ByteReader* reader)
 	HP = reader->i32();
 	AP = reader->i32();
 	AC = reader->i32();
-	unarmedDMG = reader->i32();
-	meleeDMG = reader->i32();
-	carryWeight = reader->u32();
-	sequence = reader->u32();
-	healRate = reader->u32();
-	critChance = reader->u32();
-	betterCrits = reader->u32();
+	UnarmedDMG = reader->i32();
+	MeleeDMG = reader->i32();
+	CarryWeight = reader->u32();
+	Sequence = reader->u32();
+	HealRate = reader->u32();
+	CritChance = reader->u32();
+	BetterCrits = reader->u32();
 	for (size_t i = 0; i < 7; i++)
 	{
-		thresholds.push_back(reader->u32());
+		Thresholds.push_back(reader->u32());
 	}
 	for (size_t i = 0; i < 9; i++)
 	{
-		resists.push_back(reader->u32());
+		Resists.push_back(reader->u32());
 	}
-	age = reader->u32();
-	sex = reader->u32();
+	Age = reader->u32();
+	Sex = reader->u32();
 	for (size_t i = 0; i < 7; i++)
 	{
-		bonusSPECIAL.push_back(reader->i32());
+		BonusSPECIAL.push_back(reader->i32());
 	}
-	bonusHP = reader->i32();
-	bonusAP = reader->i32();
-	bonusAC = reader->i32();
-	bonusUnarmedDMG = reader->i32();
-	bonusMeleeDMG = reader->i32();
-	bonusCarryWeight = reader->u32();
-	bonusSequence = reader->u32();
-	bonusHealRate = reader->u32();
-	bonusCritChance = reader->u32();
-	bonusBetterCrits = reader->u32();
+	BonusHP = reader->i32();
+	BonusAP = reader->i32();
+	BonusAC = reader->i32();
+	BonusUnarmedDMG = reader->i32();
+	BonusMeleeDMG = reader->i32();
+	BonusCarryWeight = reader->u32();
+	BonusSequence = reader->u32();
+	BonusHealRate = reader->u32();
+	BonusCritChance = reader->u32();
+	BonusBetterCrits = reader->u32();
 	for (size_t i = 0; i < 7; i++)
 	{
-		bonusThresholds.push_back(reader->u32());
+		BonusThresholds.push_back(reader->u32());
 	}
 	for (size_t i = 0; i < 9; i++)
 	{
-		bonusResists.push_back(reader->u32());
+		BonusResists.push_back(reader->u32());
 	}
-	bonusAge = reader->u32();
-	bonusSex = reader->u32();
+	BonusAge = reader->u32();
+	BonusSex = reader->u32();
 	for (size_t i = 0; i < 18; i++)
 	{
-		skills.push_back(reader->i32());
+		Skills.push_back(reader->i32());
 	}
-	bodyType = reader->u32();
-	expVal = reader->u32();
-	killType = reader->u32();
-	dmgType = reader->u32();
+	BodyType = reader->u32();
+	ExpVal = reader->u32();
+	KillType = reader->u32();
+	DmgType = reader->u32();
 }
 
-SceneryDoorProto_t::SceneryDoorProto_t(ByteReader* reader)
+ScenDoorProto_t::ScenDoorProto_t(ByteReader* reader)
 {
-	walkThruFlag = reader->u32();
-	doorFlag = reader->u32();
+	WalkThru = reader->u32();
+	DoorFlag = reader->u32();
 }
 
-SceneryStairProto_t::SceneryStairProto_t(ByteReader* reader)
+ScenStairProto_t::ScenStairProto_t(ByteReader* reader)
 {
-	destElev = reader->u8();
+	DestElev = reader->u8();
 	reader->u8();
-	destTile = reader->u16();
-	destMap = reader->u32();
+	DestTile = reader->u16();
+	DestMap = reader->u32();
 }
 
-SceneryElevProto_t::SceneryElevProto_t(ByteReader* reader)
+ScenElevProto_t::ScenElevProto_t(ByteReader* reader)
 {
-	elevType = reader->u32();
-	elevLevel = reader->u32();
+	ElevType = reader->u32();
+	ElevLevel = reader->u32();
 }
 
-SceneryLadderProto_t::SceneryLadderProto_t(ByteReader* reader)
+ScenLadderProto_t::ScenLadderProto_t(ByteReader* reader)
 {
-	destElev = reader->u8();
+	DestElev = reader->u8();
 	reader->u8();
-	destTile = reader->u16();
+	DestTile = reader->u16();
 }
 
-SceneryGenericProto_t::SceneryGenericProto_t(ByteReader* reader)
+ScenGenericProto_t::ScenGenericProto_t(ByteReader* reader)
 {
-	unknown = reader->u32();
+	Unknown = reader->u32();
 }
 
-SceneryProto_t::SceneryProto_t(ByteReader* reader)
+ScenProto_t::ScenProto_t(ByteReader* reader)
 {
-	wallLightFlags = reader->u16();
-	actionFlags = reader->u16();
-	scriptType = reader->u8();
-	reader->u8();
-	scriptNum = reader->u16();
-	subType = reader->u32();
-	material = reader->u32();
-	soundID = reader->u8();
+	WallLightFlags = reader->u16();
+	ActionFlags = reader->u16();
+	ScriptID = new PID_t(reader);
+	SubType = reader->u32();
+	Material = reader->u32();
+	SoundID = reader->u8();
 
-	if (subType == SCEN_TYPE_DOOR)
+	if (SubType == SCEN_TYPE_DOOR)
 	{
-		doorData = new SceneryDoorProto_t(reader);
+		DoorData = new ScenDoorProto_t(reader);
 	}
-	else if (subType == SCEN_TYPE_STAIR)
+	else if (SubType == SCEN_TYPE_STAIR)
 	{
-		stairData = new SceneryStairProto_t(reader);
+		StairData = new ScenStairProto_t(reader);
 	}
-	else if (subType == SCEN_TYPE_ELEV)
+	else if (SubType == SCEN_TYPE_ELEV)
 	{
-		elevData = new SceneryElevProto_t(reader);
+		ElevData = new ScenElevProto_t(reader);
 	}
-	else if (subType == SCEN_TYPE_LADDER_BTM || subType == SCEN_TYPE_LADDER_TOP)
+	else if (SubType == SCEN_TYPE_LADDER_BTM || SubType == SCEN_TYPE_LADDER_TOP)
 	{
-		ladderData = new SceneryLadderProto_t(reader);
+		LadderData = new ScenLadderProto_t(reader);
 	}
-	else if (subType == SCEN_TYPE_GENERIC)
+	else if (SubType == SCEN_TYPE_GENERIC)
 	{
-		genericData = new SceneryGenericProto_t(reader);
+		GenericData = new ScenGenericProto_t(reader);
 	}
 }
 
 WallProto_t::WallProto_t(ByteReader* reader)
 {
-	wallLightFlags = reader->u16();
-	actionFlags = reader->u16();
-	scriptType = reader->u8();
-	reader->u8();
-	scriptNum = reader->u16();
-	material = reader->u32();
+	WallLightFlags = reader->u16();
+	ActionFlags = reader->u16();
+	ScriptID = new PID_t(reader);
+	Material = reader->u32();
 }
 
 TileProto_t::TileProto_t(ByteReader* reader)
 {
-	material = reader->u32();
+	Material = reader->u32();
 }
 
 FallProto_t::FallProto_t(ByteReader* reader)
 {
-	objType = reader->u8();
-	reader->u8();
-	pid = reader->u16();
-	textId = reader->u32();
-	FID = new FID_t(reader);
-	lightRad = reader->u32();
-	lightIntence = reader->u32();
-	flags = reader->u32();
+	PID = new PID_t(reader);
+	TextId = reader->u32();
+	FID = new PID_t(reader);
+	LightRad = reader->u32();
+	LightIntence = reader->u32();
+	Flags = reader->u32();
 
-	if (objType == PROTO_ITEM)
+	if (PID->PIDType == PROTO_ITEM)
 	{
-		itemPro = new ItemProto_t(reader);
+		ItemPro = new ItemProto_t(reader);
 	}
-	if (objType == PROTO_CRITTER)
+	if (PID->PIDType == PROTO_CRITTER)
 	{
-		critPro = new CritterProto_t(reader);
+		CritPro = new CritterProto_t(reader);
 	}
-	if (objType == PROTO_SCENERY)
+	if (PID->PIDType == PROTO_SCENERY)
 	{
-		scenPro = new SceneryProto_t(reader);
+		ScenPro = new ScenProto_t(reader);
 	}
-	if (objType == PROTO_WALLS)
+	if (PID->PIDType == PROTO_WALLS)
 	{
-		wallPro = new WallProto_t(reader);
+		WallPro = new WallProto_t(reader);
 	}
-	if (objType == PROTO_TILES)
+	if (PID->PIDType == PROTO_TILES)
 	{
-		tilePro = new TileProto_t(reader);
+		TilePro = new TileProto_t(reader);
 	}
 }

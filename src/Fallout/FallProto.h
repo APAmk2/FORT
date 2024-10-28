@@ -2,6 +2,7 @@
 
 #include "../Utils/ByteReader.hpp"
 #include "../Utils/BaseDataTypes.h"
+#include "FallShared.h"
 #include <vector>
 #include <string>
 
@@ -48,24 +49,15 @@ enum item_material
 	MAT_LEATHER
 };
 
-class FID_t
-{
-public:
-	uint8_t FIDType = 0;
-	uint16_t FIDNum = 0;
-
-	FID_t(ByteReader* reader);
-};
-
 class ItemArmorProto_t
 {
 public:
 	int32_t AC = 0;
-	std::vector<int32_t> resists;
-	std::vector<int32_t> thresholds;
-	int32_t perk = -1;
-	FID_t* maleCRType = nullptr;
-	FID_t* femaleCRType = nullptr;
+	std::vector<int32_t> Resists;
+	std::vector<int32_t> Thresholds;
+	int32_t Perk = -1;
+	PID_t* MaleCRType = nullptr;
+	PID_t* FemaleCRType = nullptr;
 
 	ItemArmorProto_t(ByteReader* reader);
 };
@@ -73,8 +65,8 @@ public:
 class ItemContProto_t
 {
 public:
-	uint32_t maxVolume = 0;
-	uint32_t contFlags = 0;
+	uint32_t MaxVolume = 0;
+	uint32_t ContFlags = 0;
 
 	ItemContProto_t(ByteReader* reader);
 };
@@ -82,15 +74,15 @@ public:
 class ItemDrugProto_t
 {
 public:
-	std::vector<int32_t> stats;
-	std::vector<int32_t> firstMod;
-	uint32_t duration1 = 0;
-	std::vector<int32_t> secondMod;
-	uint32_t duration2 = 0;
-	std::vector<int32_t> thirdMod;
-	uint32_t addictionRate = 0;
-	uint32_t addictionEffect = 0;
-	uint32_t addictionDelay = 0;
+	std::vector<int32_t> Stats;
+	std::vector<int32_t> FirstMod;
+	uint32_t Duration1 = 0;
+	std::vector<int32_t> SecondMod;
+	uint32_t Duration2 = 0;
+	std::vector<int32_t> ThirdMod;
+	uint32_t AddictRate = 0;
+	uint32_t AddictEffect = 0;
+	uint32_t AddictDelay = 0;
 
 	ItemDrugProto_t(ByteReader* reader);
 };
@@ -98,23 +90,23 @@ public:
 class ItemWeapProto_t
 {
 public:
-	uint32_t animCode = 0;
-	uint32_t minDmg = 0;
-	uint32_t maxDmg = 0;
-	uint32_t dmgType = 0;
-	uint32_t maxRange1 = 0;
-	uint32_t maxRange2 = 0;
-	FID_t* projPID = nullptr;
-	uint32_t minST = 0;
-	uint32_t apCost1 = 0;
-	uint32_t apCost2 = 0;
-	uint32_t critFail = 0;
-	int32_t perk = -1;
-	uint32_t rounds = 0;
-	uint32_t caliber = 0;
-	FID_t* ammoPID = nullptr;
-	uint32_t maxAmmo = 0;
-	uint8_t soundId = 0;
+	uint32_t AnimCode = 0;
+	uint32_t MinDmg = 0;
+	uint32_t MaxDmg = 0;
+	uint32_t DmgType = 0;
+	uint32_t MaxRange1 = 0;
+	uint32_t MaxRange2 = 0;
+	PID_t* ProjPID = nullptr;
+	uint32_t MinST = 0;
+	uint32_t APCost1 = 0;
+	uint32_t APCost2 = 0;
+	uint32_t CritFail = 0;
+	int32_t Perk = -1;
+	uint32_t Rounds = 0;
+	uint32_t Caliber = 0;
+	PID_t* AmmoPID = nullptr;
+	uint32_t MaxAmmo = 0;
+	uint8_t SoundId = 0;
 
 	ItemWeapProto_t(ByteReader* reader);
 };
@@ -122,12 +114,12 @@ public:
 class ItemAmmoProto_t
 {
 public:
-	uint32_t caliber = 0;
-	uint32_t quantity = 0;
+	uint32_t Caliber = 0;
+	uint32_t Quantity = 0;
 	uint32_t ACMod = 0;
 	uint32_t DRMod = 0;
-	int32_t dmgMult = 0;
-	int32_t dmgDiv = 0;
+	int32_t DmgMult = 0;
+	int32_t DmgDiv = 0;
 
 	ItemAmmoProto_t(ByteReader* reader);
 };
@@ -135,9 +127,9 @@ public:
 class ItemMiscProto_t
 {
 public:
-	FID_t* powerPID = nullptr;
-	uint32_t powerType = 0;
-	uint32_t charges = 0;
+	PID_t* PowerPID = nullptr;
+	uint32_t PowerType = 0;
+	uint32_t Charges = 0;
 
 	ItemMiscProto_t(ByteReader* reader);
 };
@@ -145,7 +137,7 @@ public:
 class ItemKeyProto_t
 {
 public:
-	uint32_t keyID = 0;
+	uint32_t KeyID = 0;
 
 	ItemKeyProto_t(ByteReader* reader);
 };
@@ -153,23 +145,23 @@ public:
 class ItemProto_t
 {
 public:
-	uint32_t flagsExt = 0;
-	uint32_t scriptId = 0;
-	uint32_t subtype = 0;
-	uint32_t material = MAT_GLASS;
-	uint32_t volume = 0;
-	uint32_t weight = 0;
-	uint32_t cost = 0;
-	FID_t* invFID = nullptr;
-	uint8_t soundID = 0;
+	uint32_t FlagsExt = 0;
+	uint32_t ScriptId = 0;
+	uint32_t Subtype = 0;
+	uint32_t Material = MAT_GLASS;
+	uint32_t Volume = 0;
+	uint32_t Weight = 0;
+	uint32_t Cost = 0;
+	PID_t* InvFID = nullptr;
+	uint8_t SoundID = 0;
 
-	ItemArmorProto_t* armorData = nullptr;
-	ItemContProto_t* contData = nullptr;
-	ItemDrugProto_t* drugData = nullptr;
-	ItemWeapProto_t* weapData = nullptr;
-	ItemAmmoProto_t* ammoData = nullptr;
-	ItemMiscProto_t* miscData = nullptr;
-	ItemKeyProto_t* keyData = nullptr;
+	ItemArmorProto_t* ArmorData = nullptr;
+	ItemContProto_t* ContData = nullptr;
+	ItemDrugProto_t* DrugData = nullptr;
+	ItemWeapProto_t* WeapData = nullptr;
+	ItemAmmoProto_t* AmmoData = nullptr;
+	ItemMiscProto_t* MiscData = nullptr;
+	ItemKeyProto_t* KeyData = nullptr;
 
 	ItemProto_t(ByteReader* reader);
 };
@@ -177,125 +169,122 @@ public:
 class CritterProto_t
 {
 public:
-	uint32_t actionFlags = 0;
-	uint8_t scriptType = 0;
-	uint16_t scriptNum = 0;
-	FID_t* headFID = nullptr;
-	uint32_t aiID = 0;
-	uint32_t teamID = 0;
-	uint32_t critFlags = 0;
+	uint32_t ActionFlags = 0;
+	PID_t* ScriptID = nullptr;
+	PID_t* HeadFID = nullptr;
+	uint32_t AiID = 0;
+	uint32_t TeamID = 0;
+	uint32_t CritFlags = 0;
 	std::vector<int32_t> SPECIAL;
 	int32_t HP = 0;
 	int32_t AP = 0;
 	int32_t AC = 0;
-	int32_t unarmedDMG = 0;
-	int32_t meleeDMG = 0;
-	uint32_t carryWeight = 0;
-	uint32_t sequence = 0;
-	uint32_t healRate = 0;
-	uint32_t critChance = 0;
-	uint32_t betterCrits = 0;
-	std::vector<uint32_t> thresholds;
-	std::vector<uint32_t> resists;
-	uint32_t age = 1;
-	uint32_t sex = 0;
-	std::vector<int32_t> bonusSPECIAL;
-	int32_t bonusHP = 0;
-	int32_t bonusAP = 0;
-	int32_t bonusAC = 0;
-	int32_t bonusUnarmedDMG = 0;
-	int32_t bonusMeleeDMG = 0;
-	uint32_t bonusCarryWeight = 0;
-	uint32_t bonusSequence = 0;
-	uint32_t bonusHealRate = 0;
-	uint32_t bonusCritChance = 0;
-	uint32_t bonusBetterCrits = 0;
-	std::vector<uint32_t> bonusThresholds;
-	std::vector<uint32_t> bonusResists;
-	uint32_t bonusAge = 1;
-	uint32_t bonusSex = 0;
-	std::vector<int32_t> skills;
-	uint32_t bodyType = 0;
-	uint32_t expVal = 0;
-	uint32_t killType = 0;
-	uint32_t dmgType = 0;
+	int32_t UnarmedDMG = 0;
+	int32_t MeleeDMG = 0;
+	uint32_t CarryWeight = 0;
+	uint32_t Sequence = 0;
+	uint32_t HealRate = 0;
+	uint32_t CritChance = 0;
+	uint32_t BetterCrits = 0;
+	std::vector<uint32_t> Thresholds;
+	std::vector<uint32_t> Resists;
+	uint32_t Age = 1;
+	uint32_t Sex = 0;
+	std::vector<int32_t> BonusSPECIAL;
+	int32_t BonusHP = 0;
+	int32_t BonusAP = 0;
+	int32_t BonusAC = 0;
+	int32_t BonusUnarmedDMG = 0;
+	int32_t BonusMeleeDMG = 0;
+	uint32_t BonusCarryWeight = 0;
+	uint32_t BonusSequence = 0;
+	uint32_t BonusHealRate = 0;
+	uint32_t BonusCritChance = 0;
+	uint32_t BonusBetterCrits = 0;
+	std::vector<uint32_t> BonusThresholds;
+	std::vector<uint32_t> BonusResists;
+	uint32_t BonusAge = 1;
+	uint32_t BonusSex = 0;
+	std::vector<int32_t> Skills;
+	uint32_t BodyType = 0;
+	uint32_t ExpVal = 0;
+	uint32_t KillType = 0;
+	uint32_t DmgType = 0;
 
 	CritterProto_t(ByteReader* reader);
 };
 
-class SceneryDoorProto_t
+class ScenDoorProto_t
 {
 public:
-	uint32_t walkThruFlag = 0;
-	uint32_t doorFlag = 0xCCCCCCCC;
+	uint32_t WalkThru = 0;
+	uint32_t DoorFlag = 0xCCCCCCCC;
 
-	SceneryDoorProto_t(ByteReader* reader);
+	ScenDoorProto_t(ByteReader* reader);
 };
 
-class SceneryStairProto_t
+class ScenStairProto_t
 {
 public:
-	uint8_t destElev = 0;
-	uint16_t destTile = 0;
-	uint32_t destMap = 0;
+	uint8_t DestElev = 0;
+	uint16_t DestTile = 0;
+	uint32_t DestMap = 0;
 
-	SceneryStairProto_t(ByteReader* reader);
+	ScenStairProto_t(ByteReader* reader);
 };
 
-class SceneryElevProto_t
+class ScenElevProto_t
 {
 public:
-	uint32_t elevType = 0;
-	uint32_t elevLevel = 0;
+	uint32_t ElevType = 0;
+	uint32_t ElevLevel = 0;
 
-	SceneryElevProto_t(ByteReader* reader);
+	ScenElevProto_t(ByteReader* reader);
 };
 
-class SceneryLadderProto_t
+class ScenLadderProto_t
 {
 public:
-	uint8_t destElev = 0;
-	uint16_t destTile = 0;
+	uint8_t DestElev = 0;
+	uint16_t DestTile = 0;
 
-	SceneryLadderProto_t(ByteReader* reader);
+	ScenLadderProto_t(ByteReader* reader);
 };
 
-class SceneryGenericProto_t
+class ScenGenericProto_t
 {
 public:
-	uint32_t unknown = 0;
+	uint32_t Unknown = 0;
 
-	SceneryGenericProto_t(ByteReader* reader);
+	ScenGenericProto_t(ByteReader* reader);
 };
 
-class SceneryProto_t
+class ScenProto_t
 {
 public:
-	uint16_t wallLightFlags = 0;
-	uint16_t actionFlags = 0;
-	uint8_t scriptType = 0;
-	uint16_t scriptNum = 0;
-	uint32_t subType = 0;
-	uint32_t material = MAT_GLASS;
-	uint8_t soundID = 0;
+	uint16_t WallLightFlags = 0;
+	uint16_t ActionFlags = 0;
+	PID_t* ScriptID = nullptr;
+	uint32_t SubType = 0;
+	uint32_t Material = MAT_GLASS;
+	uint8_t SoundID = 0;
 
-	SceneryDoorProto_t* doorData = nullptr;
-	SceneryStairProto_t* stairData = nullptr;
-	SceneryElevProto_t* elevData = nullptr;
-	SceneryLadderProto_t* ladderData = nullptr;
-	SceneryGenericProto_t* genericData = nullptr;
+	ScenDoorProto_t* DoorData = nullptr;
+	ScenStairProto_t* StairData = nullptr;
+	ScenElevProto_t* ElevData = nullptr;
+	ScenLadderProto_t* LadderData = nullptr;
+	ScenGenericProto_t* GenericData = nullptr;
 
-	SceneryProto_t(ByteReader* reader);
+	ScenProto_t(ByteReader* reader);
 };
 
 class WallProto_t
 {
 public:
-	uint16_t wallLightFlags = 0;
-	uint16_t actionFlags = 0;
-	uint8_t scriptType = 0;
-	uint16_t scriptNum = 0;
-	uint32_t material = MAT_GLASS;
+	uint16_t WallLightFlags = 0;
+	uint16_t ActionFlags = 0;
+	PID_t* ScriptID = nullptr;
+	uint32_t Material = MAT_GLASS;
 
 	WallProto_t(ByteReader* reader);
 };
@@ -303,7 +292,7 @@ public:
 class TileProto_t
 {
 public:
-	uint32_t material = MAT_GLASS;
+	uint32_t Material = MAT_GLASS;
 
 	TileProto_t(ByteReader* reader);
 };
@@ -311,21 +300,20 @@ public:
 class FallProto_t
 {
 public:
-	uint8_t objType = PROTO_ITEM;
-	uint16_t pid = 0;
-	uint32_t textId = 0;
-	FID_t* FID = nullptr;
-	uint32_t lightRad = 0;
-	uint32_t lightIntence = 0;
-	uint32_t flags = 0;
+	PID_t* PID = nullptr;
+	uint32_t TextId = 0;
+	PID_t* FID = nullptr;
+	uint32_t LightRad = 0;
+	uint32_t LightIntence = 0;
+	uint32_t Flags = 0;
 
-	ItemProto_t* itemPro = nullptr;
-	CritterProto_t* critPro = nullptr;
-	SceneryProto_t* scenPro = nullptr;
-	WallProto_t* wallPro = nullptr;
-	TileProto_t* tilePro = nullptr;
+	ItemProto_t* ItemPro = nullptr;
+	CritterProto_t* CritPro = nullptr;
+	ScenProto_t* ScenPro = nullptr;
+	WallProto_t* WallPro = nullptr;
+	TileProto_t* TilePro = nullptr;
 
-	std::string filename = "test.pro";
+	std::string Filename = "test.pro";
 
 	FallProto_t(ByteReader* reader);
 };

@@ -15,11 +15,12 @@
 #include "Fonline/Fo2D_win.h"
 #include "Fonline/FoTxtb_win.h"
 
-#include "FT/FTSprite_win.h"
-
 #include "Fallout/FallMap_win.h"
 #include "Fallout/FallProto_win.h"
 #include "Fallout/FallFRM_win.h"
+
+#include "FT/FTZar_win.h"
+#include "FT/FTTil_win.h"
 
 #define PROGRAM_LABEL "FORT:A FallOut Resources Tools"
 
@@ -71,9 +72,6 @@ int Init()
     static FoTxtbWindow FoTxtbTool(false);
     Windows.push_back((BaseToolWindow*)&FoTxtbTool);
 
-    static FTSpriteWindow FTSpriteTool(false);
-    Windows.push_back((BaseToolWindow*)&FTSpriteTool);
-
     static FallProtoWindow FallProtoTool(false);
     Windows.push_back((BaseToolWindow*)&FallProtoTool);
 
@@ -82,6 +80,12 @@ int Init()
 
     static FallFRMWindow FallFRMTool(false);
     Windows.push_back((BaseToolWindow*)&FallFRMTool);
+
+    static FTZarWindow FTZarTool(false);
+    Windows.push_back((BaseToolWindow*)&FTZarTool);
+
+    static FTTilWindow FTTilTool(false);
+    Windows.push_back((BaseToolWindow*)&FTTilTool);
 
     for (size_t i = 0, len = Windows.size(); i < len; i++)
     {
@@ -115,16 +119,17 @@ void DrawMainWin()
                 if (ImGui::MenuItem("Fonline txtb")) { Windows[1]->SetVisible(!Windows[1]->GetVisible()); }
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Fallout:Tactics"))
-            {
-                if (ImGui::MenuItem("FTSprite")) { Windows[2]->SetVisible(!Windows[2]->GetVisible()); }
-                ImGui::EndMenu();
-            }
             if (ImGui::BeginMenu("Fallout 1/2"))
             {
-                if (ImGui::MenuItem("Fallout .PRO")) { Windows[3]->SetVisible(!Windows[3]->GetVisible()); }
-                if (ImGui::MenuItem("Fallout .MAP")) { Windows[4]->SetVisible(!Windows[4]->GetVisible()); }
-                if (ImGui::MenuItem("Fallout .FRM")) { Windows[5]->SetVisible(!Windows[5]->GetVisible()); }
+                if (ImGui::MenuItem("Fallout .PRO")) { Windows[2]->SetVisible(!Windows[2]->GetVisible()); }
+                if (ImGui::MenuItem("Fallout .MAP")) { Windows[3]->SetVisible(!Windows[3]->GetVisible()); }
+                if (ImGui::MenuItem("Fallout .FRM")) { Windows[4]->SetVisible(!Windows[4]->GetVisible()); }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Fallout:Tactics"))
+            {
+                if (ImGui::MenuItem("Fallout:Tactics .zar")) { Windows[5]->SetVisible(!Windows[5]->GetVisible()); }
+                if (ImGui::MenuItem("Fallout:Tactics .til")) { Windows[6]->SetVisible(!Windows[6]->GetVisible()); }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

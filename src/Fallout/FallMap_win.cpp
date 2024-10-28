@@ -220,9 +220,9 @@ void ExportFallMap(FallMap_t*& file)
 void FallMapWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout .map Reading Tool");
+	ImGui::Begin("Fallout .MAP Reading Tool");
 
-	ImGui::InputText("Fallout .map file path", &Filename);
+	ImGui::InputText("Fallout .MAP file path", &Filename);
 	ImGui::InputText("Fallout Game Path", &GamePath);
 	if (ImGui::Button("Load File"))
 	{

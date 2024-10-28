@@ -130,7 +130,7 @@ bool RenderFRM(FallFrm_t* file, uint16_t& width, uint16_t& height, int16_t& dir,
 void FallFRMWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fonline 2D Graphics Tool");
+	ImGui::Begin("Fallout FRM Graphics Tool");
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
@@ -139,6 +139,9 @@ void FallFRMWindow::DrawWin()
 	ImGui::Text("FPS:%i", (File != nullptr ? File->Fps : 0));
 	ImGui::SameLine();
 	ImGui::Text("Frames:%i/%i", FrameCount + 1, (File != nullptr ? File->FramesPerDir : 0));
+	uint16_t frameInd = (File != nullptr ? (Dir * File->FramesPerDir) + FrameCount : 0);
+	ImGui::Text("X Shift:%i + %i", (File != nullptr ? File->XShift[Dir] : 0), (File != nullptr ? File->Frames[frameInd]->XShift : 0));
+	ImGui::Text("Y Shift:%i + %i", (File != nullptr ? File->YShift[Dir] : 0), (File != nullptr ? File->Frames[frameInd]->YShift : 0));
 	if (ImGui::Button("<") && File != nullptr)
 	{
 		Dir--;
@@ -153,7 +156,7 @@ void FallFRMWindow::DrawWin()
 		if (Dir >= File->DirCount) Dir = 0;
 	}
 
-	ImGui::InputText("FOnline 2D Graphics file path", &Filename);
+	ImGui::InputText("Fallout .FRM file path", &Filename);
 	if (ImGui::Button("Load File"))
 	{
 		std::filesystem::path filepath = Filename;

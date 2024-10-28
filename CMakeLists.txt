@@ -34,10 +34,8 @@ set(NEW_FONLINE_FORMATS src/Fonline/Fo2D.cpp
 set(NEW_FONLINE_WINDOWS src/Fonline/Fo2D_win.cpp
 					src/Fonline/FoTxtb_win.cpp)
 
-set(FT_FORMATS src/FT/FTSprite.cpp)
-set(FT_WINDOWS src/FT/FTSprite_win.cpp)
-
-set(FALLOUT_FORMATS src/Fallout/FallProto.cpp
+set(FALLOUT_FORMATS src/Fallout/FallShared.cpp
+					src/Fallout/FallProto.cpp
 					src/Fallout/FallMap.cpp
 					src/Fallout/FallFRM.cpp
 					)
@@ -46,16 +44,21 @@ set(FALLOUT_WINDOWS src/Fallout/FallProto_win.cpp
 					src/Fallout/FallFRM_win.cpp
 					)
 
+set(FT_FORMATS src/FT/FTZar.cpp
+			   src/FT/FTTil.cpp)
+set(FT_WINDOWS src/FT/FTZar_win.cpp
+			   src/FT/FTTil_win.cpp)
+
 add_executable (FORT "src/main.cpp" 
 					 "3rdparty/lodepng/lodepng.cpp"
 					 "src/Utils/ByteReader.cpp"
 					 "src/Utils/MemoryReader.cpp"
 					 ${NEW_FONLINE_FORMATS}
 					 ${NEW_FONLINE_WINDOWS}
-					 ${FT_FORMATS}
-					 ${FT_WINDOWS}
 					 ${FALLOUT_FORMATS}
 					 ${FALLOUT_WINDOWS}
+					 ${FT_FORMATS}
+					 ${FT_WINDOWS}
 					 ${IMGUI_INCLUDE}
 )
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)

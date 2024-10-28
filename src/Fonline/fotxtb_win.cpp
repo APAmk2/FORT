@@ -38,7 +38,7 @@ void ExportFoTxtb(FoTxtb_t*& file)
 void FoTxtbWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fonline TXTb Reading Tool");
+	ImGui::Begin("Fonline .fotxtb Reading Tool");
 
 	ImGui::InputText("Fonline .fotxtb file path", &Filename);
 	if (ImGui::Button("Load File"))

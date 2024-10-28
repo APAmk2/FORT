@@ -4,13 +4,13 @@
 #include "imgui_stdlib.h"
 #include <filesystem>
 
-int FrameCounter = 0;
+int Fo2DFrameCounter = 0;
 
 bool ReadFo2D(std::filesystem::path& filename, Fo2D_t*& file)
 {
 	delete file;
 	file = nullptr;
-	FrameCounter = 0;
+	Fo2DFrameCounter = 0;
 	ByteReader* reader = new ByteReader;
 	if (!reader->Reset(filename.string(), ByteReader::LittleEndian)) return false;
 	file = new Fo2D_t(reader);
@@ -49,7 +49,7 @@ void ExportFo2D(Fo2D_t*& file)
 
 bool RenderFo2D(Fo2D_t* file, uint16_t& width, uint16_t& height, int16_t& dir, SDL_Texture** Fo2DTex, SDL_Renderer* renderer)
 {
-	Fo2DFrame_t* currFramePtr = &file->Data[dir].Frames[FrameCounter];
+	Fo2DFrame_t* currFramePtr = &file->Data[dir].Frames[Fo2DFrameCounter];
 	
 	SDL_DestroyTexture(*Fo2DTex);
 	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*)&currFramePtr->Pixels[0], currFramePtr->Width, currFramePtr->Height, 4 * 8, 4 * currFramePtr->Width,
@@ -73,10 +73,10 @@ bool RenderFo2D(Fo2D_t* file, uint16_t& width, uint16_t& height, int16_t& dir, S
 	width = currFramePtr->Width;
 	height = currFramePtr->Height;
 	
-	FrameCounter++;
-	if (FrameCounter >= file->Data[dir].Frames.size())
+	Fo2DFrameCounter++;
+	if (Fo2DFrameCounter >= file->Data[dir].Frames.size())
 	{
-		FrameCounter = 0;
+		Fo2DFrameCounter = 0;
 	}
 
 	return true;
@@ -93,7 +93,7 @@ void Fo2DWindow::DrawWin()
 	ImGui::SameLine();
 	ImGui::Text("FPS:%i", (File != nullptr ? (File->AnimTicks / File->FrameCount) / 10 : 0));
 	ImGui::SameLine();
-	ImGui::Text("Frames:%i/%i", FrameCounter, (File != nullptr ? File->FrameCount - 1: 0));
+	ImGui::Text("Frames:%i/%i", Fo2DFrameCounter, (File != nullptr ? File->FrameCount - 1: 0));
 	if (ImGui::Button("<") && File != nullptr)
 	{
 		Dir--;

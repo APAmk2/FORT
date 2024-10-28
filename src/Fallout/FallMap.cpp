@@ -198,26 +198,26 @@ FallMapObject_t::FallMapObject_t(ByteReader* reader)
 		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
 		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
-		file->filename = ProtoLsts[PIDType][PIDNum - 1];
+		file->Filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
 		delete protoReader;
 
-		if (file->itemPro->ammoData != nullptr)
+		if (file->ItemPro->AmmoData != nullptr)
 		{
 			AmmoData = new FallMapAmmoObject_t(reader);
 		}
 
-		if (file->itemPro->keyData != nullptr)
+		if (file->ItemPro->KeyData != nullptr)
 		{
 			KeyData = new FallMapKeyObject_t(reader);
 		}
 
-		if (file->itemPro->miscData != nullptr)
+		if (file->ItemPro->MiscData != nullptr)
 		{
 			MiscData = new FallMapMiscObject_t(reader);
 		}
 
-		if (file->itemPro->weapData != nullptr)
+		if (file->ItemPro->WeapData != nullptr)
 		{
 			WeapData = new FallMapWeapObject_t(reader);
 		}
@@ -232,26 +232,26 @@ FallMapObject_t::FallMapObject_t(ByteReader* reader)
 		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
 		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
-		file->filename = ProtoLsts[PIDType][PIDNum - 1];
+		file->Filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
 		delete protoReader;
 
-		if (file->scenPro->ladderData != nullptr)
+		if (file->ScenPro->LadderData != nullptr)
 		{
 			LadderData = new FallMapLadderObject_t(reader);
 		}
 
-		if (file->scenPro->doorData != nullptr)
+		if (file->ScenPro->DoorData != nullptr)
 		{
 			DoorData = new FallMapDoorObject_t(reader);
 		}
 
-		if (file->scenPro->stairData != nullptr)
+		if (file->ScenPro->StairData != nullptr)
 		{
 			StairsData = new FallMapStairsObject_t(reader);
 		}
 
-		if (file->scenPro->elevData != nullptr)
+		if (file->ScenPro->ElevData != nullptr)
 		{
 			ElevData = new FallMapElevObject_t(reader);
 		}
