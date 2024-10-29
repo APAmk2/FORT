@@ -12,11 +12,6 @@ FTZar_t::FTZar_t(MemoryReader* reader)
     Width = reader->u32();
     Height = reader->u32();
     PalettePresent = reader->u8();
-    printf("Header: %s\n", head.c_str());
-    printf("Type: %i\n", Type);
-    printf("Width: %i\n", Width);
-    printf("Height: %i\n", Height);
-    printf("PalettePresent: %i\n", PalettePresent);
 
     // Read palette
     if (PalettePresent)
@@ -39,12 +34,12 @@ FTZar_t::FTZar_t(MemoryReader* reader)
 
     // Read image
     uint32_t rleSize = reader->u32();
-    printf("rleSize: %i\n", rleSize);
     std::vector<uint8_t> rleBuffer;
     rleBuffer.resize(reader->Bytes() - reader->CurrPos());
     uint8_t* rleBuf = &rleBuffer[0];
+    size_t oldPos = reader->CurrPos();
     reader->Read(&rleBuffer[0], reader->Bytes() - reader->CurrPos());
-    reader->Pos(reader->CurrPos() + rleSize);
+    reader->Pos(oldPos + rleSize);
 
     // Decode
     while (rleSize)
@@ -62,6 +57,10 @@ FTZar_t::FTZar_t(MemoryReader* reader)
             ColorRGBA col2Push(col.r, col.g, col.b, rleBuf[2 * i + 1]);
             switch (controlMode)
             {
+            case 0:
+                col2Push = ColorRGBA(0, 0, 0, 0);
+                Pixels.push_back(col2Push);
+                break;
             case 1:
                 col = Palette[rleBuf[i]];
                 col2Push = ColorRGBA(col.r, col.g, col.b, 0xFF);

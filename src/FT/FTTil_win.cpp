@@ -40,7 +40,7 @@ void ExportFTTil(FTTil_t*& file)
 			image[i * 4 + 3] = currFramePtr->Pixels[i].a;
 		}
 
-		unsigned error = lodepng::encode((file->Filename + ".png"), image, width, height);
+		unsigned error = lodepng::encode((file->Filename + "_" + std::to_string(currFrame) + ".png"), image, width, height);
 		if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 
 	}

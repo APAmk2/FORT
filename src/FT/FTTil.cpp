@@ -20,6 +20,7 @@ FTTil_t::FTTil_t(MemoryReader* reader)
     for (uint32_t frm = 0; frm < FrameCount; frm++)
     {
         FTZar_t* frame = new FTZar_t(reader);
+        reader->string(8);
         ZarFrames.push_back(frame);
     }
 }
