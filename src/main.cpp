@@ -18,6 +18,7 @@
 #include "Fallout/FallMap_win.h"
 #include "Fallout/FallProto_win.h"
 #include "Fallout/FallFRM_win.h"
+#include "Fallout/FallRIX_win.h"
 
 #include "FT/FTZar_win.h"
 #include "FT/FTTil_win.h"
@@ -81,6 +82,9 @@ int Init()
     static FallFRMWindow FallFRMTool(false);
     Windows.push_back((BaseToolWindow*)&FallFRMTool);
 
+    static FallRIXWindow FallRIXTool(false);
+    Windows.push_back((BaseToolWindow*)&FallRIXTool);
+
     static FTZarWindow FTZarTool(false);
     Windows.push_back((BaseToolWindow*)&FTZarTool);
 
@@ -111,27 +115,24 @@ void DrawMainWin()
 {
     if (ImGui::BeginMainMenuBar())
     {
-        if (ImGui::BeginMenu("Tools"))
+        if (ImGui::BeginMenu("[New Fonline]"))
         {
-            if (ImGui::BeginMenu("New Fonline"))
-            {
-                if (ImGui::MenuItem("Fonline2D")) { Windows[0]->SetVisible(!Windows[0]->GetVisible()); }
-                if (ImGui::MenuItem("Fonline txtb")) { Windows[1]->SetVisible(!Windows[1]->GetVisible()); }
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Fallout 1/2"))
-            {
-                if (ImGui::MenuItem("Fallout .PRO")) { Windows[2]->SetVisible(!Windows[2]->GetVisible()); }
-                if (ImGui::MenuItem("Fallout .MAP")) { Windows[3]->SetVisible(!Windows[3]->GetVisible()); }
-                if (ImGui::MenuItem("Fallout .FRM")) { Windows[4]->SetVisible(!Windows[4]->GetVisible()); }
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Fallout:Tactics"))
-            {
-                if (ImGui::MenuItem("Fallout:Tactics .zar")) { Windows[5]->SetVisible(!Windows[5]->GetVisible()); }
-                if (ImGui::MenuItem("Fallout:Tactics .til")) { Windows[6]->SetVisible(!Windows[6]->GetVisible()); }
-                ImGui::EndMenu();
-            }
+            if (ImGui::MenuItem("Fonline2D")) { Windows[0]->SetVisible(!Windows[0]->GetVisible()); }
+            if (ImGui::MenuItem("Fonline txtb")) { Windows[1]->SetVisible(!Windows[1]->GetVisible()); }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("[Fallout 1/2]"))
+        {
+            if (ImGui::MenuItem("Fallout .PRO")) { Windows[2]->SetVisible(!Windows[2]->GetVisible()); }
+            if (ImGui::MenuItem("Fallout .MAP")) { Windows[3]->SetVisible(!Windows[3]->GetVisible()); }
+            if (ImGui::MenuItem("Fallout .FRM")) { Windows[4]->SetVisible(!Windows[4]->GetVisible()); }
+            if (ImGui::MenuItem("Fallout .RIX")) { Windows[5]->SetVisible(!Windows[5]->GetVisible()); }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("[Fallout:Tactics]"))
+        {
+            if (ImGui::MenuItem("Fallout:Tactics .zar")) { Windows[6]->SetVisible(!Windows[6]->GetVisible()); }
+            if (ImGui::MenuItem("Fallout:Tactics .til")) { Windows[7]->SetVisible(!Windows[7]->GetVisible()); }
             ImGui::EndMenu();
         }
         if (ImGui::MenuItem("Exit")) { progSettings.callExit = true; }

@@ -38,10 +38,12 @@ set(FALLOUT_FORMATS src/Fallout/FallShared.cpp
 					src/Fallout/FallProto.cpp
 					src/Fallout/FallMap.cpp
 					src/Fallout/FallFRM.cpp
+					src/Fallout/FallRIX.cpp
 					)
 set(FALLOUT_WINDOWS src/Fallout/FallProto_win.cpp
 					src/Fallout/FallMap_win.cpp
 					src/Fallout/FallFRM_win.cpp
+					src/Fallout/FallRIX_win.cpp
 					)
 
 set(FT_FORMATS src/FT/FTZar.cpp

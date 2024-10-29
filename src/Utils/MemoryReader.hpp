@@ -1,3 +1,5 @@
+//All copyrights goes to JordanCpp, thnx for allowing me to use it - APAMK2
+
 #pragma once
 
 #include "ByteReader.hpp"

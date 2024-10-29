@@ -89,6 +89,9 @@ void FTTilWindow::DrawWin()
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
 	ImGui::Text("Height:%i", Height);
+	ImGui::Text("FPS:%i", (File != nullptr ? ((1000 / File->FrameCount) / 10) : 0));
+	ImGui::SameLine();
+	ImGui::Text("Frames:%i/%i", FTTilFrameCounter, (File != nullptr ? File->FrameCount - 1 : 0));
 	ImGui::Text("Filename:%s", (File != nullptr ? File->Filename.c_str() : ""));
 
 	ImGui::InputText("Fallout:Tactics .til file path", &Filename);
