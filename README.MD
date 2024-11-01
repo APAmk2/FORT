@@ -8,6 +8,8 @@ What application contains at this time:
 	1. Fallout `.map` reader, converter to FOnline `.fomap`
 	2. Fallout `.frm` reader, viewer, converter to `.png`
 	3. Fallout `.pro` reader, viewer
+	4. Fallout `.rix` reader, viewer, converter to `.png`
+	4. Fallout `.msk` reader, viewer, converter to `.png`
 3. Fallout:Tactics Tools
 	1. Fallout:Tactics `.zar` format reader, viewer, converter to `.png`
 	2. Fallout:Tactics `.til` format reader, viewer, converter to `.png`
@@ -22,11 +24,9 @@ What is planned to implement in future:
 	1. Fallout `.acm` reader, converter to `.ogg`
 	2. Fallout `.mve` reader, viewer, converter to `.ogv` 
 	3. Fallout `.dat` reader, viewer
-	4. Fallout `.msk` reader, viewer
-	5. Fallout `.rix` reader, viewer, converter to `.png`
-	6. Fallout `SAVE.DAT` reader, viewer, editor
-	7. Fallout `.aaf` reader, viewer
-	8. Fallout `.fon` reader, viewer
+	4. Fallout `SAVE.DAT` reader, viewer, editor
+	5. Fallout `.aaf` reader, viewer
+	6. Fallout `.fon` reader, viewer
 3. Fallout:Tactics Tools
 	1. Fallout:Tactics `.spr` viewer, converter to PNGs, (from) Fallout `.frm`, (from) FOnline `.fofrm`
 	2. Fallout:Tactics `.zar` reader, viewer, converter to PNG, (from) Fallout `.frm`
