@@ -1,5 +1,8 @@
 ## FORT: a FallOut Resource Tools<br>
-FORT is a **modern** tools pack for modding **old** fallout games (Fallout 1, Fallout 2, Fallout:Tactics & FOnline), currently heavy WIP, and looks like proof-of-concept<br>
+FORT is a **modern** tools pack for modding **old** fallout games (Fallout 1, Fallout 2, Fallout:Tactics & FOnline), currently WIP.<br>
+
+<img align="right" width="640" height="480" src="https://github.com/APAMk2/FORT/raw/master/screenshot.png" alt="Screenshot" />
+
 What application contains at this time:
 1. Fonline Tools
 	1. Fonline2D Graphics format reader (new revs.), converter to `.png`
@@ -29,6 +32,6 @@ What is planned to implement in future:
 	6. Fallout `.fon` reader, viewer
 3. Fallout:Tactics Tools
 	1. Fallout:Tactics `.spr` viewer, converter to PNGs, (from) Fallout `.frm`, (from) FOnline `.fofrm`
-	2. Fallout:Tactics `.zar` reader, viewer, converter to PNG, (from) Fallout `.frm`
-	3. Fallout:Tactics `.til` reader, viewer, converter to PNGs, (from) Fallout `.frm`, (from) FOnline `.fofrm`
+	2. Fallout:Tactics `.zar` reader, viewer, converter to (from) Fallout `.frm`
+	3. Fallout:Tactics `.til` reader, viewer, converter to (from) Fallout `.frm`, (from) FOnline `.fofrm`
 4. Various other tools that related to Fallout, or FOnline
