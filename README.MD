@@ -1,7 +1,7 @@
 ## FORT: a FallOut Resource Tools<br>
 FORT is a **modern** tools pack for modding **old** fallout games (Fallout 1, Fallout 2, Fallout:Tactics & FOnline), currently WIP.<br>
 
-<img align="right" width="640" height="480" src="https://github.com/APAMk2/FORT/raw/master/screenshot.png" alt="Screenshot" />
+<img width="640" height="360" src="https://github.com/APAMk2/FORT/raw/master/screenshot.png" alt="Screenshot" />
 
 What application contains at this time:
 1. Fonline Tools
