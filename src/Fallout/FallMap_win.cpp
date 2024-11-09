@@ -291,3 +291,12 @@ void FallMapWindow::InitWin()
 	}
 	input.close();
 }
+
+void FallMapWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout 1/2]"))
+	{
+		if (ImGui::MenuItem("Fallout .MAP")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

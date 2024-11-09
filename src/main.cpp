@@ -119,27 +119,11 @@ void DrawMainWin()
 {
     if (ImGui::BeginMainMenuBar())
     {
-        if (ImGui::BeginMenu("[New Fonline]"))
+        for (size_t i = 0, len = Windows.size(); i < len; i++)
         {
-            if (ImGui::MenuItem("Fonline2D")) { Windows[0]->SetVisible(!Windows[0]->GetVisible()); }
-            if (ImGui::MenuItem("Fonline txtb")) { Windows[1]->SetVisible(!Windows[1]->GetVisible()); }
-            ImGui::EndMenu();
+            Windows[i]->ProcessMenuBtn();
         }
-        if (ImGui::BeginMenu("[Fallout 1/2]"))
-        {
-            if (ImGui::MenuItem("Fallout .PRO")) { Windows[2]->SetVisible(!Windows[2]->GetVisible()); }
-            if (ImGui::MenuItem("Fallout .MAP")) { Windows[3]->SetVisible(!Windows[3]->GetVisible()); }
-            if (ImGui::MenuItem("Fallout .FRM")) { Windows[4]->SetVisible(!Windows[4]->GetVisible()); }
-            if (ImGui::MenuItem("Fallout .RIX")) { Windows[5]->SetVisible(!Windows[5]->GetVisible()); }
-            if (ImGui::MenuItem("Fallout .MSK")) { Windows[6]->SetVisible(!Windows[6]->GetVisible()); }
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("[Fallout:Tactics]"))
-        {
-            if (ImGui::MenuItem("Fallout:Tactics .zar")) { Windows[7]->SetVisible(!Windows[7]->GetVisible()); }
-            if (ImGui::MenuItem("Fallout:Tactics .til")) { Windows[8]->SetVisible(!Windows[8]->GetVisible()); }
-            ImGui::EndMenu();
-        }
+
         if (ImGui::MenuItem("Exit")) { progSettings.callExit = true; }
         ImGui::EndMainMenuBar();
     }

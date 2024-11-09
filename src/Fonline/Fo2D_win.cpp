@@ -134,3 +134,12 @@ void Fo2DWindow::DrawWin()
 
 void Fo2DWindow::InitWin()
 {}
+
+void Fo2DWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[New Fonline]"))
+	{
+		if (ImGui::MenuItem("Fonline2D")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

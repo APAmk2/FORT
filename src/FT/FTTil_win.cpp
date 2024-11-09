@@ -119,3 +119,12 @@ void FTTilWindow::DrawWin()
 
 void FTTilWindow::InitWin()
 {}
+
+void FTTilWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout:Tactics]"))
+	{
+		if (ImGui::MenuItem("Fallout:Tactics .til")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

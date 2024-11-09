@@ -12,6 +12,7 @@ public:
 	FoTxtbWindow(bool visibility) : BaseToolWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void ProcessMenuBtn();
 private:
 	std::string Filename = "test.fotxtb";
 	FoTxtb_t* File = nullptr;

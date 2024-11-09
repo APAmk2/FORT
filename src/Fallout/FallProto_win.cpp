@@ -481,3 +481,12 @@ void FallProtoWindow::DrawWin()
 
 void FallProtoWindow::InitWin()
 {}
+
+void FallProtoWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout 1/2]"))
+	{
+		if (ImGui::MenuItem("Fallout .PRO")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

@@ -189,3 +189,12 @@ void FallFRMWindow::DrawWin()
 
 void FallFRMWindow::InitWin()
 {}
+
+void FallFRMWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout 1/2]"))
+	{
+		if (ImGui::MenuItem("Fallout .FRM")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

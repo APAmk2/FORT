@@ -12,6 +12,7 @@ public:
 	Fo2DWindow(bool visibility) : BaseToolWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;
 	int16_t Dir = 0;

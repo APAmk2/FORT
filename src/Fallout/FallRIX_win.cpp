@@ -111,3 +111,12 @@ void FallRIXWindow::DrawWin()
 
 void FallRIXWindow::InitWin()
 {}
+
+void FallRIXWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout 1/2]"))
+	{
+		if (ImGui::MenuItem("Fallout .RIX")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

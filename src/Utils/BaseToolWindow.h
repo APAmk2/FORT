@@ -8,6 +8,7 @@ public:
 
 	virtual void DrawWin() {};
 	virtual void InitWin() {};
+	virtual void ProcessMenuBtn() {};
 	virtual void SetVisible(bool val) { this->Visible = val; };
 	virtual bool GetVisible() { return this->Visible; };
 

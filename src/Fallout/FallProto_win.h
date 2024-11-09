@@ -12,6 +12,7 @@ public:
 	FallProtoWindow(bool visibility) : BaseToolWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void ProcessMenuBtn();
 private:
 	std::string Filename = "test.pro";
 	FallProto_t* File = nullptr;

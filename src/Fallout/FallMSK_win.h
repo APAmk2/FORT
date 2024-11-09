@@ -12,6 +12,7 @@ public:
 	FallMSKWindow(bool visibility) : BaseToolWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void ProcessMenuBtn();
 private:
 	std::string Filename = "test.msk";
 	FallMSK_t* File = nullptr;

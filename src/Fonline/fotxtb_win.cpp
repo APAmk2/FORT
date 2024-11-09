@@ -70,3 +70,12 @@ void FoTxtbWindow::DrawWin()
 
 void FoTxtbWindow::InitWin()
 {}
+
+void FoTxtbWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[New Fonline]"))
+	{
+		if (ImGui::MenuItem("Fonline txtb")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

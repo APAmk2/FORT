@@ -80,3 +80,12 @@ void FallMSKWindow::DrawWin()
 
 void FallMSKWindow::InitWin()
 {}
+
+void FallMSKWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout 1/2]"))
+	{
+		if (ImGui::MenuItem("Fallout .MSK")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}

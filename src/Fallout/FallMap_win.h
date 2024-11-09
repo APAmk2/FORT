@@ -12,6 +12,7 @@ public:
 	FallMapWindow(bool visibility) : BaseToolWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void ProcessMenuBtn();
 private:
 	std::string Filename = "test.map";
 	FallMap_t* File = nullptr;

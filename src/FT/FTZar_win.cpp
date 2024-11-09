@@ -98,3 +98,12 @@ void FTZarWindow::DrawWin()
 
 void FTZarWindow::InitWin()
 {}
+
+void FTZarWindow::ProcessMenuBtn()
+{
+	if (ImGui::BeginMenu("[Fallout:Tactics]"))
+	{
+		if (ImGui::MenuItem("Fallout:Tactics .zar")) { this->SetVisible(!this->GetVisible()); }
+		ImGui::EndMenu();
+	}
+}
