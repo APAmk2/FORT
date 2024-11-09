@@ -12,17 +12,23 @@
 #include "imgui_stdlib.h"
 #include "Utils/BaseToolWindow.h"
 
-#include "Fonline/Fo2D_win.h"
-#include "Fonline/FoTxtb_win.h"
+#ifdef NEW_FONLINE
+    #include "Fonline/Fo2D_win.h"
+    #include "Fonline/FoTxtb_win.h"
+#endif // NEW_FONLINE
 
-#include "Fallout/FallMap_win.h"
-#include "Fallout/FallProto_win.h"
-#include "Fallout/FallFRM_win.h"
-#include "Fallout/FallRIX_win.h"
-#include "Fallout/FallMSK_win.h"
+#ifdef FALLOUT
+    #include "Fallout/FallMap_win.h"
+    #include "Fallout/FallProto_win.h"
+    #include "Fallout/FallFRM_win.h"
+    #include "Fallout/FallRIX_win.h"
+    #include "Fallout/FallMSK_win.h"
+#endif // FALLOUT
 
-#include "FT/FTZar_win.h"
-#include "FT/FTTil_win.h"
+#ifdef FALLOUT_TACTICS
+    #include "FT/FTZar_win.h"
+    #include "FT/FTTil_win.h"
+#endif // FALLOUT_TACTICS
 
 #define PROGRAM_LABEL "FORT:A FallOut Resources Tools"
 
@@ -68,12 +74,15 @@ int Init()
     ImGui_ImplSDL2_InitForSDLRenderer(MainWin, Renderer);
     ImGui_ImplSDLRenderer2_Init(Renderer);
 
+#ifdef NEW_FONLINE
     static Fo2DWindow Fo2DTool(false);
     Windows.push_back((BaseToolWindow*)&Fo2DTool);
 
     static FoTxtbWindow FoTxtbTool(false);
     Windows.push_back((BaseToolWindow*)&FoTxtbTool);
+#endif // NEW_FONLINE
 
+#ifdef FALLOUT
     static FallProtoWindow FallProtoTool(false);
     Windows.push_back((BaseToolWindow*)&FallProtoTool);
 
@@ -88,12 +97,15 @@ int Init()
 
     static FallMSKWindow FallMSKTool(false);
     Windows.push_back((BaseToolWindow*)&FallMSKTool);
+#endif // FALLOUT
 
+#ifdef FALLOUT_TACTICS
     static FTZarWindow FTZarTool(false);
     Windows.push_back((BaseToolWindow*)&FTZarTool);
 
     static FTTilWindow FTTilTool(false);
     Windows.push_back((BaseToolWindow*)&FTTilTool);
+#endif // FALLOUT_TACTICS
 
     for (size_t i = 0, len = Windows.size(); i < len; i++)
     {

@@ -29,29 +29,42 @@ find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
 set(SDL2_LIBRARY "${SDL2_LIBDIR}/SDL2.lib;${SDL2_LIBDIR}/SDL2main.lib")
 
-set(NEW_FONLINE_FORMATS src/Fonline/Fo2D.cpp
-					src/Fonline/FoTxtb.cpp)
-set(NEW_FONLINE_WINDOWS src/Fonline/Fo2D_win.cpp
-					src/Fonline/FoTxtb_win.cpp)
+option(BUILD_NEW_FONLINE "Build New Fonline Tools" ON)
+option(BUILD_FALLOUT "Build Fallout Tools" ON)
+option(BUILD_FALLOUT_TACTICS "Build Fallout Tactics Tools" ON)
 
-set(FALLOUT_FORMATS src/Fallout/FallShared.cpp
-					src/Fallout/FallProto.cpp
-					src/Fallout/FallMap.cpp
-					src/Fallout/FallFRM.cpp
-					src/Fallout/FallRIX.cpp
-					src/Fallout/FallMSK.cpp
-					)
-set(FALLOUT_WINDOWS src/Fallout/FallProto_win.cpp
-					src/Fallout/FallMap_win.cpp
-					src/Fallout/FallFRM_win.cpp
-					src/Fallout/FallRIX_win.cpp
-					src/Fallout/FallMSK_win.cpp
-					)
+if(BUILD_NEW_FONLINE)
+	add_definitions(-DNEW_FONLINE)
+	set(NEW_FONLINE_FORMATS src/Fonline/Fo2D.cpp
+						src/Fonline/FoTxtb.cpp)
+	set(NEW_FONLINE_WINDOWS src/Fonline/Fo2D_win.cpp
+						src/Fonline/FoTxtb_win.cpp)
+endif() # BUILD_NEW_FONLINE
 
-set(FT_FORMATS src/FT/FTZar.cpp
-			   src/FT/FTTil.cpp)
-set(FT_WINDOWS src/FT/FTZar_win.cpp
-			   src/FT/FTTil_win.cpp)
+if(BUILD_FALLOUT)
+	add_definitions(-DFALLOUT)
+	set(FALLOUT_FORMATS src/Fallout/FallShared.cpp
+						src/Fallout/FallProto.cpp
+						src/Fallout/FallMap.cpp
+						src/Fallout/FallFRM.cpp
+						src/Fallout/FallRIX.cpp
+						src/Fallout/FallMSK.cpp
+						)
+	set(FALLOUT_WINDOWS src/Fallout/FallProto_win.cpp
+						src/Fallout/FallMap_win.cpp
+						src/Fallout/FallFRM_win.cpp
+						src/Fallout/FallRIX_win.cpp
+						src/Fallout/FallMSK_win.cpp
+						)
+endif() # BUILD_FALLOUT
+
+if(BUILD_FALLOUT_TACTICS)
+	add_definitions(-DFALLOUT_TACTICS)
+	set(FT_FORMATS src/FT/FTZar.cpp
+				   src/FT/FTTil.cpp)
+	set(FT_WINDOWS src/FT/FTZar_win.cpp
+				   src/FT/FTTil_win.cpp)
+endif() # BUILD_FALLOUT_TACTICS
 
 add_executable (FORT "src/main.cpp" 
 					 "3rdparty/lodepng/lodepng.cpp"
