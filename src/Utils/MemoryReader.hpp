@@ -24,6 +24,7 @@ public:
     size_t CurrPos();
     size_t Bytes();
     bool FindFragment(const uint8_t* fragment, uint32_t fragmentLen, uint32_t beginOffs);
+    bool Eof();
 private:
     size_t _Offset;
     ByteReader* _ByteReader;

@@ -1,6 +1,5 @@
 #include "FoTxtb_win.h"
-#include "imgui.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 #include <fstream>
 
@@ -38,7 +37,7 @@ void ExportFoTxtb(FoTxtb_t*& file)
 void FoTxtbWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fonline .fotxtb Reading Tool");
+	ImGui::Begin("Fonline .fotxtb Reading Tool", &Visible);
 
 	ImGui::InputText("Fonline .fotxtb file path", &Filename);
 	if (ImGui::Button("Load File"))
@@ -69,7 +68,12 @@ void FoTxtbWindow::DrawWin()
 }
 
 void FoTxtbWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fonline .txtb Tool...\n");
+	ImGui::DebugLog("Fonline .txtb Tool Init Done.\n");
+}
+
+void FoTxtbWindow::DestroyWin() { }
 
 void FoTxtbWindow::ProcessMenuBtn()
 {

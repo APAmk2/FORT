@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "FallMap.h"
 #include <vector>
 #include <string>
 
-class FallMapWindow : public BaseToolWindow
+class FallMapWindow : public BaseWindow
 {
 public:
-	FallMapWindow(bool visibility) : BaseToolWindow(visibility) { }
+	FallMapWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	std::string Filename = "test.map";

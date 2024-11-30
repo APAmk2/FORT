@@ -1,7 +1,6 @@
 #include "FTZar_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 
 bool ReadFTZar(std::filesystem::path& filename, FTZar_t*& file)
@@ -35,7 +34,7 @@ void ExportFTZar(FTZar_t*& file)
 	}
 
 	unsigned error = lodepng::encode((file->Filename + ".png"), image, width, height);
-	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 }
 
 bool RenderFTZar(FTZar_t* file, uint16_t& width, uint16_t& height, SDL_Texture** Fo2DTex, SDL_Renderer* renderer)
@@ -68,7 +67,7 @@ bool RenderFTZar(FTZar_t* file, uint16_t& width, uint16_t& height, SDL_Texture**
 void FTZarWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout:Tactics .zar Graphics Tool");
+	ImGui::Begin("Fallout:Tactics .zar Graphics Tool", &Visible);
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
@@ -97,7 +96,12 @@ void FTZarWindow::DrawWin()
 }
 
 void FTZarWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout:Tactics .zar Tool...\n");
+	ImGui::DebugLog("Fallout:Tactics .zar Tool Init Done.\n");
+}
+
+void FTZarWindow::DestroyWin() { }
 
 void FTZarWindow::ProcessMenuBtn()
 {

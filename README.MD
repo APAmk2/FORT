@@ -12,7 +12,7 @@ What application contains at this time:
 	2. Fallout `.frm` reader, viewer, converter to `.png`
 	3. Fallout `.pro` reader, viewer
 	4. Fallout `.rix` reader, viewer, converter to `.png`
-	4. Fallout `.msk` reader, viewer, converter to `.png`
+	5. Fallout `.msk` reader, viewer, converter to `.png`
 3. Fallout:Tactics Tools
 	1. Fallout:Tactics `.zar` format reader, viewer, converter to `.png`
 	2. Fallout:Tactics `.til` format reader, viewer, converter to `.png`
@@ -31,7 +31,12 @@ What is planned to implement in future:
 	5. Fallout `.aaf` reader, viewer
 	6. Fallout `.fon` reader, viewer
 3. Fallout:Tactics Tools
-	1. Fallout:Tactics `.spr` viewer, converter to PNGs, (from) Fallout `.frm`, (from) FOnline `.fofrm`
-	2. Fallout:Tactics `.zar` reader, viewer, converter to (from) Fallout `.frm`
-	3. Fallout:Tactics `.til` reader, viewer, converter to (from) Fallout `.frm`, (from) FOnline `.fofrm`
+	1. Fallout:Tactics `.spr` reader, viewer, converter to PNGs, (from) Fallout `.frm`, (from) FOnline `.fofrm`
+	2. Fallout:Tactics `.zar` converter to (from) Fallout `.frm`
+	3. Fallout:Tactics `.til` converter to (from) Fallout `.frm`, (from) FOnline `.fofrm`
 4. Various other tools that related to Fallout, or FOnline
+
+## Thanks To:<br>
+- JordanCpp, Using His Byte & Memory Readers from [ArcanumWorld](https://github.com/JordanCpp/ArcanumWorld)
+- Cvet, and His [Fonline Engine](https://github.com/cvet/fonline) as Format Reading References.
+- TeamX.ru Team for Their Docs About Format Structures.

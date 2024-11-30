@@ -1,7 +1,6 @@
 #include "FallMSK_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 
 bool ReadFallMSK(std::filesystem::path& filename, FallMSK_t*& file)
@@ -22,7 +21,7 @@ bool ReadFallMSK(std::filesystem::path& filename, FallMSK_t*& file)
 void ExportFallMSK(FallMSK_t*& file)
 {
 	unsigned error = lodepng::encode((file->Filename + ".png"), file->PixelMask, MSK_WIDTH, MSK_HEIGHT, LCT_GREY, 1);
-	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 }
 
 bool RenderFallMSK(FallMSK_t* file, SDL_Texture** fallMSKTex, SDL_Renderer* renderer)
@@ -53,7 +52,7 @@ bool RenderFallMSK(FallMSK_t* file, SDL_Texture** fallMSKTex, SDL_Renderer* rend
 void FallMSKWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout .msk Graphics Tool");
+	ImGui::Begin("Fallout .msk Graphics Tool", &Visible);
 
 	ImGui::Text("Filename:%s", (File != nullptr ? File->Filename.c_str() : ""));
 
@@ -79,7 +78,12 @@ void FallMSKWindow::DrawWin()
 }
 
 void FallMSKWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout .MSK Tool...\n");
+	ImGui::DebugLog("Fallout .MSK Tool Init Done.\n");
+}
+
+void FallMSKWindow::DestroyWin() { }
 
 void FallMSKWindow::ProcessMenuBtn()
 {

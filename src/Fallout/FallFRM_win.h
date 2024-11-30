@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "FallFRM.h"
 #include <vector>
 #include <string>
 
-class FallFRMWindow : public BaseToolWindow
+class FallFRMWindow : public BaseWindow
 {
 public:
-	FallFRMWindow(bool visibility) : BaseToolWindow(visibility) { }
+	FallFRMWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;

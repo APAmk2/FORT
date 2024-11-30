@@ -1,8 +1,6 @@
 #include "FallFRM_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
-#include <stdio.h>
+#include "../FORT.h"
 #include <filesystem>
 
 static int FrameCount = 0;
@@ -34,6 +32,18 @@ bool ReadFRM(std::filesystem::path& filename, FallFrm_t*& file)
 	delete file;
 	file = nullptr;
 	FrameCount = 0;
+
+	std::filesystem::path palPath = filename;
+	palPath.replace_extension(".pal");
+	if (!SetupPalette(palPath.string()))
+	{
+		palPath = progSettings.falloutPath + "/color.pal";
+		if (!SetupPalette(palPath.string()))
+		{
+			return false;
+		}
+	}
+	
 	ByteReader* reader = new ByteReader;
 	if (!reader->Reset(filename.string(), ByteReader::BigEndian)) return false;
 	file = new FallFrm_t(reader);
@@ -70,7 +80,7 @@ void ExportFRM(FallFrm_t*& file, const std::string& filename)
 			std::filesystem::path path = filename;
 			path.replace_extension(std::to_string(dir) + "_" + std::to_string(frame) + ".png");
 			unsigned error = lodepng::encode(path.string(), image, currFrame->Width, currFrame->Height, LCT_RGBA, 8);
-			if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+			if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 		}
 	}
 }
@@ -130,7 +140,7 @@ bool RenderFRM(FallFrm_t* file, uint16_t& width, uint16_t& height, int16_t& dir,
 void FallFRMWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout FRM Graphics Tool");
+	ImGui::Begin("Fallout FRM Graphics Tool", &Visible);
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
@@ -159,17 +169,8 @@ void FallFRMWindow::DrawWin()
 	ImGui::InputText("Fallout .FRM file path", &Filename);
 	if (ImGui::Button("Load File"))
 	{
+		SDL_DestroyTexture(Tex);
 		std::filesystem::path filepath = Filename;
-		std::filesystem::path palPath = filepath;
-		palPath.replace_extension(".pal");
-		if(!SetupPalette(palPath.string()))
-		{
-			if (!SetupPalette("Fallout/color.pal"))
-			{
-				return;
-			}
-		}
-
 		ReadFRM(filepath, File);
 	}
 	ImGui::SameLine();
@@ -181,14 +182,20 @@ void FallFRMWindow::DrawWin()
 	if (File != nullptr && FPSTimer <= SDL_GetTicks())
 	{
 		RenderFRM(File, Width, Height, Dir, &Tex, Renderer);
-		if(File->Fps != 0) FPSTimer = SDL_GetTicks() + (1000 / File->Fps);
+		if(File->Fps > 0) FPSTimer = SDL_GetTicks() + (1000 / (File->Fps < 10 ? 10 : File->Fps));
+		else FPSTimer = SDL_GetTicks() + (1000 / 10);
 	}
 	ImGui::Image((void*)Tex, ImVec2(Width, Height));
 	ImGui::End();
 }
 
 void FallFRMWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout .FRM Tool...\n");
+	ImGui::DebugLog("Fallout .FRM Tool Init Done.\n");
+}
+
+void FallFRMWindow::DestroyWin() { }
 
 void FallFRMWindow::ProcessMenuBtn()
 {

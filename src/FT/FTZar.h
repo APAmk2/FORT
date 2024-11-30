@@ -19,5 +19,5 @@ public:
 
 	std::string Filename = "";
 
-	FTZar_t(MemoryReader* reader);
+	FTZar_t(MemoryReader* reader, std::vector<ColorRGBA>* pal = nullptr);
 };

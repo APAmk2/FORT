@@ -1,7 +1,4 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -61,12 +58,17 @@ endif() # BUILD_FALLOUT
 if(BUILD_FALLOUT_TACTICS)
 	add_definitions(-DFALLOUT_TACTICS)
 	set(FT_FORMATS src/FT/FTZar.cpp
-				   src/FT/FTTil.cpp)
+				   src/FT/FTTil.cpp
+				   #src/FT/FTSpr.cpp
+	)
 	set(FT_WINDOWS src/FT/FTZar_win.cpp
-				   src/FT/FTTil_win.cpp)
+				   src/FT/FTTil_win.cpp
+				   #src/FT/FTSpr_win.cpp
+	)
 endif() # BUILD_FALLOUT_TACTICS
 
 add_executable (FORT "src/main.cpp" 
+					 "src/options.cpp"
 					 "3rdparty/lodepng/lodepng.cpp"
 					 "src/Utils/ByteReader.cpp"
 					 "src/Utils/MemoryReader.cpp"
@@ -81,9 +83,11 @@ add_executable (FORT "src/main.cpp"
 set_property(TARGET FORT PROPERTY CXX_STANDARD 20)
 set_target_properties(FORT PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/binaries/debug"
-                      RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/binaries/release")
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/binaries/release"
+					  RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_SOURCE_DIR}/binaries/RelWithDebInfo"
+					  RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_CURRENT_SOURCE_DIR}/binaries/MinSizeRel")
 
 add_custom_command(TARGET FORT POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_LIBDIR}/SDL2.dll" $<TARGET_FILE_DIR:FORT>)
 
-include_directories(FORT ${SDL2_INCLUDE_DIR} ${IMGUI_PATH} ${IMGUI_PATH}/backends ${IMGUI_PATH}/misc/cpp 3rdparty/lodepng ${ZLIB_INCLUDE_DIRS})
+include_directories(FORT ${SDL2_INCLUDE_DIR} ${IMGUI_PATH} ${IMGUI_PATH}/backends ${IMGUI_PATH}/misc/cpp 3rdparty/lodepng ${ZLIB_INCLUDE_DIRS} 3rdparty/tomlplusplus)
 target_link_libraries(FORT ${SDL2_LIBRARY} ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zlib-1.2.3/lib/zlib.lib)

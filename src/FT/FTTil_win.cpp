@@ -1,7 +1,6 @@
 #include "FTTil_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 
 int FTTilFrameCounter = 0;
@@ -41,7 +40,7 @@ void ExportFTTil(FTTil_t*& file)
 		}
 
 		unsigned error = lodepng::encode((file->Filename + "_" + std::to_string(currFrame) + ".png"), image, width, height);
-		if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+		if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 
 	}
 }
@@ -84,12 +83,12 @@ bool RenderFTTil(FTTil_t* file, uint16_t& width, uint16_t& height, SDL_Texture**
 void FTTilWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout:Tactics .til Graphics Tool");
+	ImGui::Begin("Fallout:Tactics .til Graphics Tool", &Visible);
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
 	ImGui::Text("Height:%i", Height);
-	ImGui::Text("FPS:%i", (File != nullptr ? ((1000 / File->FrameCount) / 10) : 0));
+	ImGui::Text("FPS:10");
 	ImGui::SameLine();
 	ImGui::Text("Frames:%i/%i", FTTilFrameCounter, (File != nullptr ? File->FrameCount - 1 : 0));
 	ImGui::Text("Filename:%s", (File != nullptr ? File->Filename.c_str() : ""));
@@ -109,7 +108,7 @@ void FTTilWindow::DrawWin()
 	if (File != nullptr && FPSTimer <= SDL_GetTicks())
 	{
 		RenderFTTil(File, Width, Height, &Tex, Renderer);
-		FPSTimer = SDL_GetTicks() + (1000 / 10 * File->FrameCount);
+		FPSTimer = SDL_GetTicks() + (1000 / 10);
 	}
 
 	ImGui::Image((void*)Tex, ImVec2(Width, Height));
@@ -118,7 +117,12 @@ void FTTilWindow::DrawWin()
 }
 
 void FTTilWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout:Tactics .til Tool...\n");
+	ImGui::DebugLog("Fallout:Tactics .til Tool Init Done.\n");
+}
+
+void FTTilWindow::DestroyWin() { }
 
 void FTTilWindow::ProcessMenuBtn()
 {

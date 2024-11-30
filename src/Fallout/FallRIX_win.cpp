@@ -1,7 +1,6 @@
 #include "FallRIX_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 
 bool ReadFallRIX(std::filesystem::path& filename, FallRIX_t*& file)
@@ -36,7 +35,7 @@ void ExportFallRIX(FallRIX_t*& file)
 	}
 
 	unsigned error = lodepng::encode((file->Filename + ".png"), image, width, height);
-	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 }
 
 bool RenderFallRIX(FallRIX_t* file, uint16_t& width, uint16_t& height, SDL_Texture** fallRIXTex, SDL_Renderer* renderer)
@@ -81,7 +80,7 @@ bool RenderFallRIX(FallRIX_t* file, uint16_t& width, uint16_t& height, SDL_Textu
 void FallRIXWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout .rix Graphics Tool");
+	ImGui::Begin("Fallout .rix Graphics Tool", &Visible);
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
@@ -110,7 +109,12 @@ void FallRIXWindow::DrawWin()
 }
 
 void FallRIXWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout .RIX Tool...\n");
+	ImGui::DebugLog("Fallout .RIX Tool Init Done.\n");
+}
+
+void FallRIXWindow::DestroyWin() { }
 
 void FallRIXWindow::ProcessMenuBtn()
 {

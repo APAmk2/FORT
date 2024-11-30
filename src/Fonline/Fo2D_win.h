@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "Fo2D.h"
 #include <vector>
 #include <string>
 
-class Fo2DWindow : public BaseToolWindow
+class Fo2DWindow : public BaseWindow
 {
 public:
-	Fo2DWindow(bool visibility) : BaseToolWindow(visibility) { }
+	Fo2DWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;

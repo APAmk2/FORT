@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "FallRIX.h"
 #include <vector>
 #include <string>
 
-class FallRIXWindow : public BaseToolWindow
+class FallRIXWindow : public BaseWindow
 {
 public:
-	FallRIXWindow(bool visibility) : BaseToolWindow(visibility) { }
+	FallRIXWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;

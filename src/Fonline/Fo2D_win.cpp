@@ -1,7 +1,6 @@
 #include "Fo2D_win.h"
-#include "imgui.h"
 #include "lodepng.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 
 int Fo2DFrameCounter = 0;
@@ -42,7 +41,7 @@ void ExportFo2D(Fo2D_t*& file)
 			}
 
 			unsigned error = lodepng::encode((file->Filename + "_" + std::to_string(currData) + "_" + std::to_string(currFrame)) + ".png", image, width, height);
-			if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+			if (error) ImGui::DebugLog("encoder error %i:%s\n", error, lodepng_error_text(error));
 		}
 	}
 }
@@ -85,7 +84,7 @@ bool RenderFo2D(Fo2D_t* file, uint16_t& width, uint16_t& height, int16_t& dir, S
 void Fo2DWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fonline 2D Graphics Tool");
+	ImGui::Begin("Fonline 2D Graphics Tool", &Visible);
 
 	ImGui::Text("Width:%i", Width);
 	ImGui::SameLine();
@@ -125,7 +124,8 @@ void Fo2DWindow::DrawWin()
 	if (File != nullptr && FPSTimer <= SDL_GetTicks())
 	{
 		RenderFo2D(File, Width, Height, Dir, &Tex, Renderer);
-		FPSTimer = SDL_GetTicks() + (File->AnimTicks / File->FrameCount);
+		if(File->AnimTicks > 0) FPSTimer = SDL_GetTicks() + (File->AnimTicks / File->FrameCount);
+		else FPSTimer = SDL_GetTicks() + (1000 / 10);
 	}
 	ImGui::Image((void*)Tex, ImVec2(Width, Height));
 
@@ -133,7 +133,12 @@ void Fo2DWindow::DrawWin()
 }
 
 void Fo2DWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fonline2D Tool...\n");
+	ImGui::DebugLog("Fonline2D Tool Init Done.\n");
+}
+
+void Fo2DWindow::DestroyWin() { }
 
 void Fo2DWindow::ProcessMenuBtn()
 {

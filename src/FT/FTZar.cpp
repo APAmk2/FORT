@@ -1,7 +1,7 @@
 #include "FTZar.h"
-#include <stdio.h>
+#include "imgui.h"
 
-FTZar_t::FTZar_t(MemoryReader* reader)
+FTZar_t::FTZar_t(MemoryReader* reader, std::vector<ColorRGBA>* pal)
 {
     // Read header
     std::string head = reader->string(6);
@@ -12,6 +12,17 @@ FTZar_t::FTZar_t(MemoryReader* reader)
     Width = reader->u32();
     Height = reader->u32();
     PalettePresent = reader->u8();
+
+    if (pal != nullptr)
+    {
+        if (PalettePresent)
+        {
+            ImGui::DebugLog("<zar> Can't have palette!\n");
+            return;
+        }
+        Palette.resize(256);
+        memcpy(&Palette[0], &pal[0], sizeof(ColorRGBA) * 256);
+    }
 
     // Read palette
     if (PalettePresent)

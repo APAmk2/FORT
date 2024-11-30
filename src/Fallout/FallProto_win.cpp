@@ -1,6 +1,5 @@
 #include "FallProto_win.h"
-#include "imgui.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 #include <fstream>
 
@@ -428,7 +427,7 @@ void RenderTileProto(TileProto_t* tilePro)
 void FallProtoWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout .PRO Reading Tool");
+	ImGui::Begin("Fallout .PRO Reading Tool", &Visible);
 
 	ImGui::InputText("Fallout .PRO file path", &Filename);
 	if (ImGui::Button("Load File"))
@@ -480,7 +479,12 @@ void FallProtoWindow::DrawWin()
 }
 
 void FallProtoWindow::InitWin()
-{}
+{
+	ImGui::DebugLog("Initializing Fallout .PRO Tool...\n");
+	ImGui::DebugLog("Fallout .PRO Tool Init Done.\n");
+}
+
+void FallProtoWindow::DestroyWin() { }
 
 void FallProtoWindow::ProcessMenuBtn()
 {

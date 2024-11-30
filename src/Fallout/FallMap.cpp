@@ -1,12 +1,13 @@
 #include "FallMap.h"
 #include "FallProto.h"
+#include "../FORT.h"
+#include <filesystem>
 
 const std::string ProtoTypeNames[6] = { "Items", "Critters", "Scenery", "Walls", "Tiles", "Misc" };
 
 std::vector<std::vector<std::string>> ProtoLsts;
 bool LstsReady = false;
 uint32_t MapVer = 0;
-std::string GamePath = "Fallout/F2/";
 
 FallMapTile_t::FallMapTile_t(ByteReader* reader)
 {
@@ -75,7 +76,7 @@ void SetupProtoLsts()
 	for (int i = 0; i < 6; i++)
 	{
 		std::string currString;
-		std::string path = GamePath + "proto/" + ProtoTypeNames[i] + "/" + ProtoTypeNames[i] + ".LST";
+		std::filesystem::path path = progSettings.falloutPath + "/proto/" + ProtoTypeNames[i] + "/" + ProtoTypeNames[i] + ".LST";
 		std::ifstream input(path);
 		if (input.is_open())
 		{
@@ -195,8 +196,8 @@ FallMapObject_t::FallMapObject_t(ByteReader* reader)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
-		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
+		std::filesystem::path path = progSettings.falloutPath + "/proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
+		if (!protoReader->Reset(path.string(), ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
 		file->Filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();
@@ -229,8 +230,8 @@ FallMapObject_t::FallMapObject_t(ByteReader* reader)
 	{
 		FallProto_t* file = nullptr;
 		ByteReader* protoReader = new ByteReader;
-		std::string path = GamePath + "proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
-		if (!protoReader->Reset(path, ByteReader::BigEndian)) return;
+		std::filesystem::path path = progSettings.falloutPath + "/proto/" + ProtoTypeNames[PIDType] + "/" + ProtoLsts[PIDType][PIDNum - 1];
+		if (!protoReader->Reset(path.string(), ByteReader::BigEndian)) return;
 		file = new FallProto_t(protoReader);
 		file->Filename = ProtoLsts[PIDType][PIDNum - 1];
 		protoReader->Close();

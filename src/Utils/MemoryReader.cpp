@@ -42,7 +42,6 @@ std::vector<uint8_t>& MemoryReader::Content()
 void MemoryReader::Read(void* buffer, size_t bytes)
 {
 	memcpy(buffer, &_Content[_Offset], bytes);
-
 	_Offset += bytes;
 }
 
@@ -140,4 +139,9 @@ bool MemoryReader::FindFragment(const uint8_t* fragment, uint32_t fragmentLen, u
         }
     }
     return false;
+}
+
+bool MemoryReader::Eof()
+{
+    return _Offset < Bytes();
 }

@@ -1,6 +1,5 @@
 #include "FallMap_win.h"
-#include "imgui.h"
-#include "imgui_stdlib.h"
+#include "../FORT.h"
 #include <filesystem>
 #include <fstream>
 #include <format>
@@ -220,10 +219,9 @@ void ExportFallMap(FallMap_t*& file)
 void FallMapWindow::DrawWin()
 {
 	if (!GetVisible()) return;
-	ImGui::Begin("Fallout .MAP Reading Tool");
+	ImGui::Begin("Fallout .MAP Reading Tool", &Visible);
 
 	ImGui::InputText("Fallout .MAP file path", &Filename);
-	ImGui::InputText("Fallout Game Path", &GamePath);
 	if (ImGui::Button("Load File"))
 	{
 		std::filesystem::path filepath = Filename;
@@ -280,8 +278,11 @@ void FallMapWindow::DrawWin()
 
 void FallMapWindow::InitWin()
 {
+	ImGui::DebugLog("Initializing Fallout .MAP Tool...\n");
+
 	std::string currString;
-	std::ifstream input(GamePath + "art/tiles/TILES.LST");
+	std::filesystem::path tilesPath = progSettings.falloutPath + "/art/tiles/TILES.LST";
+	std::ifstream input(tilesPath);
 	if (input.is_open())
 	{
 		while (getline(input, currString))
@@ -290,7 +291,11 @@ void FallMapWindow::InitWin()
 		}
 	}
 	input.close();
+
+	ImGui::DebugLog("Fallout .MAP Tool Init Done.\n");
 }
+
+void FallMapWindow::DestroyWin() { }
 
 void FallMapWindow::ProcessMenuBtn()
 {

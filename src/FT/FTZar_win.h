@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "FTZar.h"
 #include <vector>
 #include <string>
 
-class FTZarWindow : public BaseToolWindow
+class FTZarWindow : public BaseWindow
 {
 public:
-	FTZarWindow(bool visibility) : BaseToolWindow(visibility) { }
+	FTZarWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;

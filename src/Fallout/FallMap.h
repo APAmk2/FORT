@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 
-extern std::string GamePath;
-
 class FallMapTile_t
 {
 public:

@@ -1,17 +1,18 @@
 #pragma once
 
 #include "SDL.h"
-#include "../Utils/BaseToolWindow.h"
+#include "../Utils/BaseWindow.h"
 #include "FTTil.h"
 #include <vector>
 #include <string>
 
-class FTTilWindow : public BaseToolWindow
+class FTTilWindow : public BaseWindow
 {
 public:
-	FTTilWindow(bool visibility) : BaseToolWindow(visibility) { }
+	FTTilWindow(bool visibility) : BaseWindow(visibility) { }
 	void DrawWin();
 	void InitWin();
+	void DestroyWin();
 	void ProcessMenuBtn();
 private:
 	uint16_t Width = 0, Height = 0;

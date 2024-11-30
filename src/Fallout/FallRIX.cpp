@@ -1,5 +1,4 @@
 #include "FallRIX.h"
-#include <stdio.h>
 
 FallRIX_t::FallRIX_t(MemoryReader* reader)
 {

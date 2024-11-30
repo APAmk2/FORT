@@ -1,5 +1,4 @@
 #include "FTTil.h"
-#include <stdio.h>
 
 FTTil_t::FTTil_t(MemoryReader* reader)
 {
